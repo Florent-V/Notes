@@ -1,22 +1,22 @@
 # Table of Contents
 
-1. [PHP](./PHP.pdf)
+1. [HTML(pdf)](./HTML.pdf) & [HTML](./HTML.md)
 
-2. [JS](./JS.pdf)
+2. [CSS](./CSS.pdf)
 
-3. [JS pour le Web](./JS_WEB.pdf)
+3. [JS](./JS.pdf)
 
-4. [HTML](./HTML.pdf)
+4. [JS pour le Web](./JS_WEB.pdf)
 
-5. [CSS](./CSS.pdf)
+5. [PHP](./PHP.pdf)
 
-6. [GIT](./GIT.pdf)
+5. [La POO en PHP](./POO.md)
 
-7. [POO](./POO.md)
+6. [La PDO en PHP](./PDO.md)
 
-8. [PDO](./PDO.md)
+7. [GIT](./GIT.pdf)
 
-9. [SQL](./SQL.md)
+8. [SQL](./SQL.md)
 
 
 
