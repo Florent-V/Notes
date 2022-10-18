@@ -1,6 +1,11 @@
 # Notes HTML
 
-## COOL HTML ELEMENTS
+## Tables of contents
+
+1. [Cool HTML Elements](#cool-html-elements)
+
+
+# **COOL HTML ELEMENTS**
 
 * meter & progress
 

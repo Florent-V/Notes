@@ -6,21 +6,22 @@
 2. [Création d'une base de données](#création-dune-base-de-donnée)
 3. [Récupérer les informations d'une BDD](#récupérer-les-informations)
 4. [Manipuler les données](#manipuler-les-données)
+4. [Bilan](#bilan)
 
 
-
-## **Installation de MySQL**
+##### [Return to Top](#notes-sql)
+# **Installation de MySQL**
 
 D'abord on installe :
 ``` sh
-$ sudo apt update 
-$ sudo apt install mysql-server
+$sudo apt update 
+$sudo apt install mysql-server
 ```
 
 Ensuite on configure :
 
 ``` sh
-$ sudo mysql_secure_installation
+$sudo mysql_secure_installation
 ```
 
 ``` sh
@@ -32,15 +33,16 @@ mysql > FLUSH PRIVILEGES;
 Pour se connecter à notre base de donnée :
 
 ``` sh
-$ mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -p
+$mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -p
 ```
 
 Pour se connecter à une base de donnée précise :
 
 ``` sh
-$ mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -D wizard -p
+$mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -D wizard -p
 ```
-## **Création d'une base de donnée**
+##### [Return to Top](#notes-sql)
+# **Création d'une base de donnée**
 
 * Importer une BDD existante
 
@@ -133,8 +135,8 @@ On voit les différents champs de la table.
 ``` sql
 DESCRIBE wizard;
 ```
-
-## **Récupérer les informations**
+##### [Return to Top](#notes-sql)
+# **Récupérer les informations**
 
 * La commande SELECT
 
@@ -246,7 +248,8 @@ ORDER BY ages;
 ```
 On aura donc la liste de tous les âges représentés par les membres de notre site, sans doublons, et par ordre croissant.
 
-## **Manipuler les données**
+##### [Return to Top](#notes-sql)
+# **Manipuler les données**
 
 * Ajouter des données : INSERT
 
@@ -356,8 +359,30 @@ Pour renommer une table :
 RENAME TABLE ancien_nom TO nouveau_nom;
 ```
 
+##### [Return to Top](#notes-sql)
+# **Bilan**
+## Création base, table et insertion de valeur :
+``` sql
+CREATE DATABASE checkpoint1;
+USE checkpoint1;
+CREATE TABLE bribe (
+    `id` INT PRIMARY KEY AUTO_INCREMENT NOT NULL, 
+    `name` VARCHAR(100) NOT NULL, 
+    `payment` INT NOT NULL
+    );
 
-## **Les bases de la modélisation**
+INSERT INTO bribe (name, payment) 
+VALUES ('Alexandre D', 250),
+('Jessica P', 500),
+('Maxence H', 1200),
+('Megane P', 850),
+('Axel C', 1500),
+('Marine V', 1400);
+```
+
+
+##### [Return to Top](#notes-sql)
+# **Les bases de la modélisation**
 
 
 
