@@ -2,12 +2,8 @@
 
 ## Tables of contents
 
-1. [Les classes et les objets](#les-classes-et-les-objets)
-2. [Les propriétés](#les-propriétés)
-3. [Les méthodes](#les-méthodes)
-4. [Constructeurs et visibilité](#constructeur-et-visibilité)
-5. [Les constantes de classe](#les-constantes-de-classe)
-6. [Héritage et parentalité](#héritage-et-parentalité)
+1. [Fonction intéressantes en PHP](#fonction-intéressante-en-php)
+
 
 
 ##### [Return to Top](#réalisation-et-sécurisation-des-formulaires-en-php)
@@ -18,10 +14,20 @@
 ``` php
 array_map('htmlentities', $_POST)
 ```
-* Retourner le integer d'une variable :
+* Retourner le integer d'une variable avec `intval()`
 ``` php
 intval($var)
 ```
+Fonctionne de la même manière : `floatval()`
+
+* Vérifier qu'un objet est une instance d'une classe : `instanceof`
+
+``` php
+$obj instanceof MyClass
+// Return true or false
+```
+
+
 
 
 ``` php

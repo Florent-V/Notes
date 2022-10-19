@@ -2,14 +2,16 @@
 
 ## Tables of contents
 
-1. [Les Namespace](#les-namespaces)
+1. [Le Problème](#le-problème)
+2. [Les Namespace](#les-namespace)
+3. [Espace de nom global](#espace-de-nom-global)
 
 
 En programmation orientée objet, il arrive que différentes classes, fonctions ou constantes portent le même nom (d'une bibliothèque à une autre par exemple). Afin d'éviter tout conflit, PHP met à disposition des espaces de noms: les namespaces.
 
 
 ##### [Return to Top](#notes-name-space)
-# **Les namespaces** 
+# **Le problème** 
 
 L'intérêt des namespaces est de permettre à une application de pouvoir utiliser des classes aux noms identiques dans un même projet.
 
@@ -38,6 +40,11 @@ On obtiendrait donc une erreur :
 
     PHP Fatal error: Cannot declare class Event, because the name is already in use
 
+
+##### [Return to Top](#notes-name-space)
+# **Les namespace**
+
+
 Les espaces de noms vont pouvoir régler ce problème. On va donc ajouter des namespaces dans nos deux classes :
 
 ``` php
@@ -65,7 +72,10 @@ L'effet de l'ajout de namespace sera de créer pour chacune de ces classes un FQ
 * `Entity\Even`t Pour la classe `src/Entity/Event.php`
 * `Events\Event` Pour la classe `src/Events/Event.php`
 
-Maintenant, il sera ainsi possible d'instancier ces deux classes dans un même fichier, de cette façon :
+Maintenant, il sera ainsi possible d'instancier ces deux classes dans un même fichier.
+A partir de l'instant où l'on définie une classe dans un *namespace*, son nom devient le **FQCN**. L'utilisaton de son identifiant court ne fonctionne plus.
+
+On doit donc procéder ainsi même pour les classes qui n'ont pas de doublons.
 
 ``` php
 <?php
@@ -80,7 +90,8 @@ $event = new Events\Event();
     Cette fois, aucune erreur et nous avons bien deux instances différentes
 
 Dans l'usage, nous utiliserons plutôt le mot clé `use` en début de fichier plutôt que d'appeler les classes par leur FQCN à chaque instanciation.  
-Dans le cas de cet exemple, comme nous avons deux classes ayant le même nom, nous devrons donner un alias à l'une d'entre elles afin de les distinguer :
+
+Dans le cas de cet exemple, comme nous avons deux classes ayant le même nom, nous **devrons** donner un alias à l'une d'entre elles afin de les distinguer :
 
 ``` php
 <?php
@@ -94,5 +105,42 @@ $technicalEvent = new TechnicalEvent();
 ```
 
 Ceci te permettra d'aborder sereinement le principe d'autoload (chargement automatique des classes) !
+
+## Récupérer le FQCN
+
+On utilise l'opérateur ::class qui renvoie le nom complet d'une classe sous forme d'une chaîne de caractères :
+``` php
+use App\Temple\Column;
+
+// Display App\Temple\Column
+echo Column::class;
+```
+
+
+
+##### [Return to Top](#notes-name-space)
+# **Espace de nom global**
+
+Le namespace gloabl est `\`.
+
+Exemple : PDO, les fonctions sur les tableaux, sur les chaînes de caractères s'y trouvent.
+
+ON peut donc y accèder via un nom complet ou via un alias.
+
+Remarque : si un *namespace* est défini, PHP recherchera par défaut les identifiants dans ce *namespace*.
+
+``` php
+<?php
+
+namespace App;
+use PDO as DataAcess;
+
+// PDO is in \ not in \App
+// $pdo = new PDO(DSN, LOGIN, PASSWORD); PHP look in current namespace but no App\PDO => ERROR
+
+$pdo = new \PDO(DSN, LOGIN, PASSWORD); // OK
+$dataAccess = new DataAcess(DSN, LOGIN, PASSWORD);
+```
+
 
 ##### [Return to Top](#notes-name-space)

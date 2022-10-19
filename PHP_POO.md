@@ -8,6 +8,10 @@
 4. [Constructeurs et visibilité](#constructeur-et-visibilité)
 5. [Les constantes de classe](#les-constantes-de-classe)
 6. [Héritage et parentalité](#héritage-et-parentalité)
+7. [AutoLoading](#autoloading)
+8. [Polymorphisme](#le-polymorphisme)
+9. [Propriétés et méthodes de classe](#propric3a9tc3a9s-et-mc3a9thodes-de-classe-1)
+10. [Abstraction]()
 
 
 ##### [Return to Top](#notes-poo)
@@ -583,7 +587,8 @@ $bicycle = new Bicycle('blue', 1);
 echo $bicycle->forward();
 var_dump($bicycle);
 ```
-Tu peux maintenant utiliser la classe `Bicycle` comme tu l’as fait précédemment. Les méthodes du parent sont directement accessibles par l'enfant.
+La classe `Bicycle` hérite du constructeur de sa classe parente.   
+On peut donc maintenant utiliser la classe `Bicycle`. Les méthodes du parent sont directement accessibles par l'enfant.
 
 La classe Car serait donc alors celle ci :
 
@@ -665,6 +670,8 @@ object(Car)[2]
   protected int 'nbWheels' => *uninitialized*
 ```
 
+Une classe fille a un comportement identique à la classe mère : les mêmes méthodes publiques, les mêmes constantes de classe, les mêmes propriétés.
+
 * ## Mot clé parent
 
 Pour la classe `Car`, on a créé un nouveau constructeur dédié à la classe
@@ -692,12 +699,276 @@ public function __construct(string $color, int $nbSeats, string $energy)
 ```
 Pour résumer :
 
+Le constructeur est hérité du parent comme n'importe quelle méthode. Ici, comme il est défini, il remplace le constructeur parent. Le mot clé `::parent` permet un accès explicite à un membre de la classe mère, ici le constructeur.
+
 Dans la classe `Car`, la méthode `__construct()` prend 3 paramètres en entrée. Elle appelle ensuite via le mot clé `parent::`, la méthode `__construct()` définie dans la classe parente `Vehicle` puis applique sa propre logique pour l'énergie.
+
+* ## Redéfinition
+
+Une redéfinition de méthode permet de modifier la classe fille pour adapter le comportement spécifique à celle-ci. La méthode de la classe mère est alors écrasée dans la classe fille.
+``` php
+<?php
+class Boat
+{
+   protected int $speed;
+   public function getSpeed(): int 
+   {
+       return $this->speed;
+   }
+}
+```
+``` php
+<?php
+class RowBoat extends Boat
+{
+   private int $rowerNumber;
+   public function getSpeed(): int 
+   {
+       return $this->speed + $this->getRowerNumber();
+   }
+}
+```
+
+* ## Le mot clé final
+
+Le mot clé final rend l'héritage interdit. Le but est de limiter la création d'une classe qui n'aurait pas d'intérêt dans le contexte métier.
+``` php
+final class RowBoat extends Boat
+{
+   //…
+}
+```
+
+``` php
+class SpecialRowBoat extends RowBoat
+{
+  // ERROR doesn't work because RowBoat is "final"
+}
+
+```
 
 
 
 ##### [Return to Top](#notes-poo)
-* ## Quand utiliser les constantes ?
+# **AutoLoading**
+
+Avec la fonction `spl_autoload_register()`. Cela est désormais bien simplifié avec `composer`.
+
+Son objectif est de faire un require automatique du fichier contenant la classe, par exemple si toutes les classes sont dans le dossier `src/` et que les fichiers portent le nom de leur classe avec un suffixe `.php` :
+
+``` php
+<?php
+spl_autoload_register(function($class){
+    include __DIR__ . '/src/' . $class . ".php";
+});
+
+// src/Boat.php automatically required
+$boat = new Boat(); 
+
+// src/Amphora.php automatically required
+$amphora = new Amphora(); 
+```
+
+Permet d'éviter tous les `require` des classes qui sont dans le dossier src.
+
+On peut mettre ce bout de code dans un fichier `autoload.php` en racine du projet. Et c'est lui que l'on require au début.
+
+``` php
+<?php
+require './autoload.php'; 
+```
+
+##### [Return to Top](#notes-poo)
+# **Le Polymorphisme**
+
+Un objet fille peut faire tout ce que peut faire un objet mère.
+
+Si un objet est paramètre d'une fonction, il est possible d'utiliser ses descendants à la place :
+
+``` php
+<?php
+class Boat
+{
+  private array $containers;
+  // Add a container to a boat
+  public function load(Container $container): bool
+  {
+     $this->containers[] = $container;
+  }
+}
+```
+Ici on type la méthode load avec la classe `Container`. Mais on peut l'utiliser avec tous les objets créés à partir de classe enfant. Il est courant de typer avec la classe Mère.
+
+Si une nouvelle classe hérite de Container, le code fonctionnera toujours.
+
+**Limite** : Seules les méthodes de la classe mère sont alors disponible, non celles spécifiques à chaque fille.
+
+Les instances d'une classe mère ou de ses filles peuvent être indistinctement utilisées ici. Tous les contenants sont *compatibles* avec l'actiond d'être chargé dans un bateau, puis qu'ils héritent de `Container`.
+``` php
+<?php
+require_once "classes/Boat.php";
+require_once "classes/Container.php";
+require_once "classes/Barrel.php";
+require_once "classes/Amphora.php";
+require_once "classes/Bottle.php";
+
+$boat = new Boat("Héra", 10);
+$genericContainer = new Container(10);
+$amphora = new Amphora(5);
+$bottle = new Bottle(1);
+$barrel = new Barrel(50);
+
+$boat->load($genericContainer);
+$boat->load($amphora);
+$boat->load($bottle);
+$boat->load($barrel);
+
+echo count($boat->getContainers()); // 4
+```
+
+##### [Return to Top](#notes-poo)
+# **Propriétés et méthodes de classe**
+## Rappels
+
+- Propriétés :
+    - Chaque objet dispose des mêmes propriétés mais avec des valeurs différentes
+    - Elles sont allouées à l'instanciation de l'objet
+
+- Méthodes :
+    - Doivent être appelées sur un objet
+    - S'appliquent aux propriétés de cet objet ($this)
+
+## Propriétés et méthodes de classe
+
+- Propriétés de classe :
+    - Existent au niveau de la **classe**
+    - Une seule instance accessible dès la déclaration de la classe
+    - Implicitement **partagées entre tous les objets de la classe**
+    - Visibilité : comme les propriétés *normales*
+
+- Méthode de classe :
+    - Ne sont pas appelées sur un objet (≅fonction)
+    - Pas accès aux propriétés *normales*, uniquement aux propriétés de classe
+
+1. Propriétés de classe
+
+On utilise le mot clé `static` devant une propriété qui vient alors une propriété de classe.  
+On y accède dans la classe via `self::` comme les constantes de classes.  
+this représente l'instance en cours.  
+self représente la classe.  
+
+``` php
+<?php
+class Boat
+{
+  // The total number of boat created
+  private static int $boatCounter = 0;
+
+  public function __construct(string $name, int $speed)
+  {
+      // Counting boats
+      self::$boatCounter++;
+      $this->name = $name;
+      $this->speed = $speed;
+  }
+}
+```
+
+2. Méthodes de classe
+
+On utilise le mot clé `static` devant une méthode qui devient alors une propriété de classe.  
+On y accède dans la classe via `self::`
+On y accède ailleurs via `NomClasse::méthode()`
+``` php
+<?php
+class Boat
+{
+   // Display the number of created devices
+   public static function count(): int
+   {
+       return self::$boatCounter;
+   }
+}
+```
+``` php
+<?php
+$boat = new Boat('Hera', 10);
+$secondBoat = new Boat('Rhéa', 15);
+echo Boat::count(); //2
+$anotherBoat = new Boat('Gaia', 8);
+echo Boat::count(); //3
+```
+
+##### [Return to Top](#notes-poo)
+# **Abstraction**
+
+L'héritage peut répondre à des problématiques simples. La POO apporte d'autres outils, plus subtils, pour répondre à des cas de figure avancées.
+
+* ## L'abstraction
+
+Dans le cas des véhicules, on a créé plusieurs classes enfants. Cependant rien n'empêche encore de faire cela :
+
+``` php
+<?php
+$vehicle = new Vehicle('pink', 4);
+```
+Or la POO a pour but de représenter programmatiquement des concepts *concrets*. Dans le cas de la conduite, la classe Vehicle est trop générique et ne veut pas dire grand chose.
+
+Pour interdir l'utilisation directe de cette classe, on peut donc lui ajouter le mot clé `abstract`. Cela permet d'indiquer que cette classe est abstraite, qu'elle n'a pour but que de servir de "*mère*" à d'autres classes plus précises qui partageront certaines caractéristiques communes. 
+
+La syntaxe est la suivante :
+``` php
+<?php
+abstract class Vehicle
+{
+   // ...
+}
+```
+En aucun cas, cette classe abstraite ne doit donc être intanciée en l'état et désormais cela n'est plus possible.
+
+Il est possible d'appliquer le mot clé `abstract` à une **méthode** précise. Dans ce cas, la méthode devra être **obligatoirement être redéfinie dans toutes les classes filles.**
+
+Imaginons par exemple une méthode permettant d’indiquer comment changer une roue. Entre une voiture, un vélo ou un skate, l’implémentation de la méthode va être totalement différente ! Pourtant, il est possible de changer une roue sur tous ces véhicules, c’est donc bien un point commun entre eux.
+
+Une méthode abstraite `changeWheel()` va alors être définie dans la classe parente `Vehicle`, afin **d’obliger** chaque fille à l’implémenter à sa manière. De ce fait, le corps d’une méthode abstraite est toujours vide (puisque l’implémentation dépend de la classe fille) et **les accolades ne sont pas ajoutées.**
+``` php
+<?php
+abstract class Vehicle
+{
+   //...
+   abstract public function changeWheel();`
+}
+```
+
+**Remarque :**
+Si une classe **au moins une** méthode abstraite, elle doit forcément être elle-même abstraite (le mot clé `abstract` doit alors être ajouté avant le mot clé `class`). Cependant, une classe abstraite peut posséder des méthodes qui ne sont pas abstraites, si le comportement de ces dernières est commun à toutes les filles.
+
+* ## Le mot clé final
+
+C'est un peu l'inverse du mot clé abstract. Il permet cette fois-ci d'indiquer qu'une classe ou une méthode ne peut pas être héritée par une autre.
+
+**Selon les besoins métiers** de notre application, c'est à nous de défnir le degré de liberté que l'on souhaite donner aux développeurs utilisant nos classes. Le mot clé final permet donc d'**empêcher l'héritage** de telle ou telle classe si cela est pertinent.
+
+Il suffit alors d'écrire :
+``` php
+<?php
+final class ElectricCar
+{
+    //…
+}
+```
+**Remarque :**
+Il est possible de définir uniquement une méthode en `final` (mais pas une propriété ou une constante). Dans ce cas, la redéfinition de cette méthode est impossible dans une classe fille, mais la classe peut toujours être héritée.
+Il n’est pas obligatoire (comme avec `abstract`) de rendre toute la classe `final` si seulement une ou des méthodes sont définies comme telles.
+
+* ## Exemple
+
+![Exemple](./img/06.png)
+
+
+##### [Return to Top](#notes-poo)
+# **Main Title**
+* ## Subtitle
 
 ``` php
 <?php
