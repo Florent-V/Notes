@@ -3,9 +3,56 @@
 
 ## Tables of contents
 
-1. [Installation](#installation)
-2. [Initialisation d'un projet composer](#initialisation-dun-projet-composer)
-3. [Chargement des classes (Autoloading)](#chargement-des-classes-autoloading)
+1. [Introduction](#introduction)
+2. [Installation](#installation)
+3. [Initialisation d'un projet composer](#initialisation-dun-projet-composer)
+4. [Chargement des classes (Autoloading)](#chargement-des-classes-autoloading)
+5. [Ajouter et supprimer des dépendances](#ajouter-des-dépendances)
+6. [composer.json VS composer.lock](#composerjson-vs-composerlock)
+7. [Mise à jour](#mise-à-jour)
+
+
+##### [Return to Top](#notes-composer)
+# **Introduction**
+
+Composer est un gestionnaire de dépendances pour PHP.  
+
+* C'est quoi une dépendance ?
+
+Pour certains projets, on ne va jamais tout développer. Certaines briques existent déjà, créées par d'autres développeurs et fonctionnent très bien. On va donc ajouter ces briques à notre projet. Ce sont des **dépendances**.  
+Ces briques dépendent surement d'autres briques : ce sont des `sous-dépendances` ou des `dépendances imbriquées`. Chaque brique peut évoluer indépendemment des autres, chacune à son propre numéro de version. Un projet contient souvent des centaines de dépendances.
+
+* C'est quoi un gestionnaire de dépendance ?
+
+C'est un gestionnaire de paquet (APT, YUM...) Mais c'est orienté objet.  
+Cela permet d'automatiser l'installation, la mise à jour, la suppression de bibliothèque dans le cadre d'une application, d'un projet. Cela résout des dépendances automatiquement et récursivement.
+
+* D'où viennent les paquets ?
+`GitHub` stocke les paquets, `Pakagist` crée un index, un pont vers composer, `Composer` installe, met en cache et configure.
+
+* Recherche un paquet
+Il faut se rendre sur `https://packagist.org/`, rechercher un paquet et suivre les indications pour l'installer.
+
+Par exemple, pour envoyer un mail, il existe la librairie [Mailer](https://packagist.org/packages/symfony/mailer).
+
+>Il faut faire très attention aux librairies que tu vas choisir, car tu vas intégrer du code que tu ne maîtrises pas.
+Cela peut potentiellement être dangereux. Il est donc vivement recommandé de choisir uniquement des librairies sûres.
+
+* Comment définir qu'une librairie est sure ?
+    * Elle est activement maintenue
+    * Elle possède une communauté importante (forums...)
+    * Elle dispose d'une documentation complète et claire
+    * Elle est dans un état stable (pas de beta, alpha... en production)
+
+Tu ne peux pas installer n'importe quelle librairie via Composer. Toutes les librairies disponibles à l'installation sont présentes sur le site https://packagist.org.
+
+* Packagist fournit des informations sur :
+    * Le nombre de téléchargements
+    * Le nombre de projets dépendants
+    * Le Github du projet
+    * Les versions
+    * Les dépendances de la dépendance XD
+...
 
 
 ##### [Return to Top](#notes-composer)
@@ -29,9 +76,25 @@ Il faut d'abord suivre les instructions de la section [installation locale](#ins
 ```sh
 $sudo mv composer /usr/local/bin
 ```
+
+POur vérifier il faut lancer la commande :
+```sh
+composer --version
+```
+* ## BILAN 
+
+![installation-01](./img/07.png)
+![installation-02](./img/08.png)
+
 ##### [Return to Top](#notes-composer)
 # **Initialisation d'un projet composer**
 Avant tout utilisation de composer,il faut vérifier si on utilise bien une version à jour. Pour mettre à jour automatiquement il faut lancer la commande suivante :
+
+On commence par faire un git init :
+```sh
+git init
+```
+
 ```sh
 composer self-update
 ```
@@ -65,6 +128,8 @@ Ce fichier contient toutes les informations relatives au projet que l'on a rense
     "require": {}
 }
 ```
+
+Ne pas oublier de rajouter le dossier `vendor` dans le `.gitignore`.
 
 ##### [Return to Top](#notes-composer)
 # **Chargement des classes (Autoloading)**
@@ -114,3 +179,120 @@ echo $object->talk();
 ```
 
 Si on modifie l'autoload dans le composer.json après l'installation, il faudra jouer la commande `composer dump-autoload` pour ques les changements soient pris en compte.
+
+```sh
+composer dump-autoload
+```
+
+##### [Return to Top](#notes-composer)
+# **Ajouter des dépendances**
+
+* ## Ajout de dépendance 
+La syntaxe est la suivante :
+```sh
+// Si installé globalement
+composer require <vendor>/<package_name>
+```
+
+```sh
+composer require twig/twig ^2.4 
+```
+Préciser la version est optionnel
+
+Ou alors on ajoute dans composer.json
+
+```json
+"require": {
+     "twig/twig": "^2.4"
+ }
+```
+Puis dans le terinale on entre :
+```sh
+composer install
+```
+Cela  
+* Ajoute la dépendance dans le fichier `composer.json`
+* Télécharge les dépendances dans le dossier `vendor`
+* Création/Mise à jour du fichier `composer.lock`
+
+**IMPORTANT :**
+* Le dossier vendor **toujours** dans .gitignore
+* Le fichier composer.lock **jamais** dans .gitignore
+
+Si on ne connaît pas l'identifiant de la librairie on peut saisir :
+```sh
+composer require
+```
+Et suivre les indications du terminal.
+
+À la fin de l'installation, il est important de noter deux choses inscrites dans le terminal :
+
+* `Writing lock file` : Cela signifie que Composer va soit créer le fichier composer.lock, soit le mettre à jour s'il existe déjà.
+* Generating autoload files (cf. Composer 1 - Autoload)
+
+Il faut aussi noter que ton fichier `composer.json` a été mis à jour. La librairie a été ajoutée dans la section `require`. Le code de la librairie a également été téléchargé dans le dossier `vendor/`.
+
+>**Attention**  
+>Le dossier `vendor/` ne doit jamais être versionné sinon le poids du repository s'alourdirait considérablement et inutilement... Pense donc à bien ajouter `vendor/` dans ton fichier `.gitignore.`
+
+
+
+* ## Suppression de dépendance 
+```sh
+composer remove twig/twig
+```
+
+##### [Return to Top](#notes-composer)
+
+# **composer.json VS composer.lock**
+
+## composer.json
+
+* C’est vous qui le définissez
+* Reflète vos souhaits
+* Les dépendances choisies, et les versions acceptées
+* On l’utilise essentiellement en environnement de DEV
+* Ressource de la commande update
+
+## composer.lock
+
+* Généré par composer
+* Reflète l’existant
+* Les dépendances et versions actuellement installées
+* On l’utilise essentiellement en environnement de PROD
+* Ressource de la commande install (sauf la première fois)
+
+Il faut impérativement versionner ton fichier composer.lock (en plus du fichier composer.json) pour s'assurer que tous les développeurs utilisent les mêmes versions de dépendances.
+
+
+
+##### [Return to Top](#notes-composer)
+# **Mise à jour**
+
+```sh
+composer install
+```
+Contrairement à ce que l'on pourrait croire, la commande `install` n'est pas utilisée uniquement lors de l'installation, mais également pour les mises à jour.    
+Cette commande va lire le fichier `composer.json`, et, si le fichier composer.lock est présent, installer les versions précises des dépendances qu'il contient (si différentes de celles déjà installées). Le fichier `composer.lock` sert donc de référence à cette commande et n'est pas modifié.
+
+
+```sh
+composer update
+```
+Met à jour toutes les dépendances du projet en fonction des règles définies.  Dans ce cas, le fichier composer.json sert de base et le fichier composer.lock sera mis à jour.  
+Note: C'est équivalent à supprimer le fichier composer.lock et exécuter : composer install.
+
+
+
+```sh
+composer composer update twig/twig
+```
+Met à jour une dépendance
+
+
+```sh
+composer self-update
+```
+Met à jour composer lui-même
+
+>Le dossier` /vendor` étant régulièrement mis à jour, son contenu est amené à être régulièrement modifié/écrasé. De plus, ce dernier ne doit pas être versionné. De ce fait, il ne faut donc JAMAIS modifier directement le contenu d'un fichier contenu dans ce dossier `/vendor`, car cette modification ne sera pas versionnée et sera ré-écrasée dès que tu mettras à jour un package.
