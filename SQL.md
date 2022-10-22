@@ -389,6 +389,73 @@ VALUES ('Alexandre D', 250),
 ``` sql
 
 ```
+
+
+
+
+
+##### [Return to Top](#notes-sql)
+# **Modifier une table existance**
+
+* ## Ajouter un champ
+
+``` sql
+ALTER TABLE Nom_de_la_table 
+ADD Nom_de_la_colonne Type_de_donnees;
+```
+* ## Modifier un champ
+
+Ici on préciser le nom du champ à modifier.
+
+``` sql
+ALTER TABLE Nom_de_la_table
+MODIFY Nom_de_la_colonne Type_de_donnees
+```
+
+* ## Supprimer un champ
+
+``` sql
+ALTER TABLE table1
+DROP COLUMN colonne2,
+DROP COLUMN colonne3;
+```
+Exemple :
+``` sql
+ALTER TABLE wizard
+DROP COLUMN birthday,
+DROP COLUMN biography;
+```
+* ## Supprimer une table
+
+``` sql
+DROP TABLE table1, table2 ;
+```
+* ## Supprimer la BDD
+
+``` sql
+ DROP DATABASE test ;
+```
+
+
+
+
+
+
+
+
+
+##### [Return to Top](#notes-sql)
+# **Main Title**
+* ## Subtitle
+
+``` php
+<?php
+
+```
+
+
+
+
 [u]Texte[/u]
 <color=red>Texte</color> / [color=#FF3300]Texte[/color]
 
