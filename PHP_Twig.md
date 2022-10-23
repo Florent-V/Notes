@@ -106,6 +106,24 @@ Hello {{firstname}} {{lastname}}
 ```
 ![Syntaxe Twig](./img/09.png)
 
+* ## Les filtres
+
+* upper : string to upper
+* lower : string to lower
+* title : première lettre de chaque mot de la chaîne en majuscule
+* length : retourne le nombre de caractères d’une chaîne ou d’un tableau
+* raw : ne pas échapper le code html
+* sort: trier un tableau
+* date: formater une date
+
+Filtres de block
+``` twig
+{% filter upper %}
+   this text will be in uppercase
+   {{ myOtherVarInUppercaseToo }}
+{% endfilter %}
+```
+
 * ## Les conditions
 ``` twig
 {% if temperature > 35 %}
