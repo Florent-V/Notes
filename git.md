@@ -17,10 +17,19 @@ florent@florent-linux:/media/florent/SSD_Flo/DEV/Exercices_Formation/WCS/TWIG_01
 
 
 ##### [Return to Top](#notes-git)
-# **Main Title**
+# **Git Work Flow**
 * ## Subtitle
 
-``` php
-<?php
+branche master :
+branche dev :
+- on démarre pull origin dev
+- nouvelle branche git chackout -b newbranch
+- on travaille sur la branche puis -> add -> commit
+- git push origin branchname
+
+Ensuite on fait une pull request sur git hub.
+
+``` git
+
 
 ```

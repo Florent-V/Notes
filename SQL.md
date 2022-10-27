@@ -6,7 +6,10 @@
 2. [Création d'une base de données](#création-dune-base-de-donnée)
 3. [Récupérer les informations d'une BDD](#récupérer-les-informations)
 4. [Manipuler/Modifier les données](#manipulermodifier-les-données)
-4. [Bilan](#bilan)
+5. [Bilan](#bilan)
+6. [Les bases de la modélisation](#les-bases-de-la-modélisation)
+7. [les jointures](#les-jointures)
+8. [SQL avancé](#sql-avancé)
 
 
 ##### [Return to Top](#notes-sql)
@@ -411,69 +414,98 @@ VALUES ('Alexandre D', 250),
 ##### [Return to Top](#notes-sql)
 # **Les bases de la modélisation**
 
-* ## Quelques définitions
 
-**Les entités :** la modélisation consiste à regrouper de manière logique des données (un élève, une école, un livre), que l’on va appeler des entités. Chaque entité possède un certain nombre d’attributs qui lui sont propres (un nom et un prénom pour un élève ; un nom et une capacité pour une école ; un titre et un nombre de pages pour un livre, etc.). Il faut également un identifiant unique (correspondant à un ou plusieurs attributs) qui permettra de caractériser sans ambiguïté possible un représentant de cette entité.
+* ## MODELISATION CONCEPTUELLEE DE DONNEES (MCD)
+
+
+**Les entités :** Une entité est un regroupement d’éléments ayant les mêmes caractéristiques. Une entité possède des propriétés permettant de caractériser celle-ci :un nom et un prénom pour un élève ; un nom et une capacité pour une école ; un titre et un nombre de pages pour un livre, etc.).   
+Il faut également un identifiant unique qui permettra de caractériser sans ambiguïté possible un représentant de cette entité.
 ![Entités](./img/10.png)
 
 
-**Les relations :** les entités vont interagir entre elles, les relations caractérisent donc le type de lien entre ces entités.
+**Les relations :** ce sont les liens entre deux entités ou plus. Une relation peut parfois posséder elle-même des attributs. En effet, pour l’emprunt, une date peut être associée (pour calculer une date de retour limite).  
 Par exemple, pour la bibliothèque de Poudlard, si tu as une entité Wizard et une entité Book, un sorcier va pouvoir interagir avec un livre en empruntant celui-ci.
-De plus, une relation peut parfois posséder elle-même des attributs. En effet, pour l’emprunt, une date peut être associée (pour calculer une date de retour limite), ce qui n’empêchera pas le sorcier de ré-emprunter le livre une autre fois (à une autre date).
-
 ![Relation](./img/11.png)
 
-**Les cardinalités :** les relations entre entités peuvent être de plusieurs types. On parle de cardinalités pour décrire le nombre d'interactions possibles entre un élément d’une entité et une autre entité. Note que pour calculer les cardinalités, il ne faut considérer qu’un et un seul élément d’une entité. Par exemple, pour une entité Sorcier, tu considères un seul sorcier à la fois (Harry ou Ron ou Hermione ou même Draco si tu es fan de serpentard) et non l’ensemble des sorciers correspondant à l’entité.
+**Les cardinalités :** On parle de cardinalités pour décrire le nombre d'interactions possibles entre un élément d’une entité et une autre entité.  
+Par exemple, un sorcier ne pourra être inscrit que dans une seule école à la fois (ou ne pas être inscrit du tout) et une école peut accueillir de 0 à N sorciers.   
+Pour une association de 2 entités, il y a donc 4 cardinalités à indiquer :
+- La cardinalité de la relation Wizard -> School est donc 0-1.
+- La cardinalité de la relation School -> Wizard est donc 0-N (N représente un nombre potentiellement infini).
 
-Par exemple, un sorcier ne pourra être inscrit que dans une seule école à la fois (ou ne pas être inscrit du tout). La cardinalité de la relation Wizard -> School est donc 0-1.
-Le sens de la relation est très important. Considère maintenant la relation dans l’autre direction. Une école (on part donc bien ici d’un seul élément de l’entité School) peut accueillir de 0 à N sorciers (ainsi cette école peut interagir avec plusieurs éléments de l’entité Wizard). La cardinalité de la relation School -> Wizard est donc 0-N (N représente un nombre potentiellement infini).
+Le sens de la cardinalité est donc important.
 ![Cardinalités](./img/12.png)
 
-Schéla final de base de donées : e nom de l’entité devient un nom de table
-les propriétés de l’entité deviennent les champs de la table. Il faut également penser à leur attribuer les bons types (int, varchar, boolean, etc.)
-les identifiants deviennent des clés primaires
-![Schéma](./img/13.png)
+![Exemple](./img/19.png)
+
+![Exemple](./img/20.png)
 
 
-* ## Les types de relations
 
-Comment relier les données d’une table avec celles d’une autre table ? Considère un sorcier (un tuple de la table wizard, identifié par sa clé primaire id) scolarisé dans une école (un tuple de la table school, identifié par sa clé primaire, également appelée id).
+* ## Passage de la MCD à la MLD (Modèle Logique de Données)
 
-1. Comme tu l’as vu plus haut, un élève ne peut être inscrit que dans 0 à 1 école à la fois. La cardinalité de la relation wizard->school est donc 0-1.
-2. La relation inverse school->wizard est quant à elle de type 0 à N, une école peut en effet accueillir de 0 à N élèves.
-3. Maintenant que tu as les cardinalités de ta relation, dans les deux sens, tu ne vas plus considérer que les bornes maximales. Ce sont elles qui nous intéressent pour la suite. Tu te retrouves donc avec une relation 1-N (1 est la borne maximale pour la relation wizard->school et N la borne maximale pour la relation school->wizard).
-
-Il existe trois types de relation :
+On ne garde que les entités On prend les bornes maximales des cardinalités des deux côtés pour déterminer le type de relation, 3 possibles :
 
 **1. Many To One (1-N)**
 
-C’est le cas juste au-dessus du sorcier inscrit dans une seule Ecole (une école peut inscrire plusieurs sorciers).
+C’est le cas juste d'un élève inscrit dans 0 ou 1 seule Ecole  alors qu'une école peut inscrire de 0 à N élèves.
+
+Ajout d’une clé étrangère côté “1”. Ce champ prend la valeur d’un champ unique (généralement l’id) de la table côté “n”
+![Schéma](./img/21.png)
+![Foreign key](./img/25.png)
 
 **2. One To One (1-1)**
 
-Une relation unique entre deux entités. Par exemple, un Sorcier ne pourra posséder qu’une et une seule Baguette, et une Baguette n’a qu’un seul Sorcier (ce n’est pas tout à fait vrai dans le livre 7, mais JK Rowling n’a pas voulu réécrire l’histoire pour coller à la quête, aucun effort de sa part !).
+Une relation unique entre deux entités. Par exemple, un Sorcier ne pourra posséder qu’une et une seule Baguette, et une Baguette n’a qu’un seul Sorcier.
 
 **3. Many To Many (N-M)**
 
-une entité peut interagir avec plusieurs éléments d’une autre entité, et vice versa. Par exemple, un Sorcier peut connaître plusieurs Sortilèges, et un sortilège peut être connu par plusieurs Sorciers en même temps.
+Une entité peut interagir avec plusieurs éléments d’une autre entité, et vice versa. Par exemple, un Sorcier peut connaître plusieurs Sortilèges, et un sortilège peut être connu par plusieurs Sorciers en même temps.
 Pour cette dernière relation, les cardinalités maximales sont bien N-N mais on écrit plutôt N-M.
+
+Exemple : Plusieurs écoles ET plusieurs langages. On prend les plus grandes cardinalités des deux côtés. L’une des deux “n” devient “m” pour plus de lisibilité.  
+Création d’une table de jointure contenant les deux clés étrangères (ce couple de clés peut suffire comme clé primaire de la table de jointure).  
+![Schéma](./img/23.png)
+
+
+Bilan :
+![Schéma](./img/24.png)
+
+* ## Modèle Physique de Données (MPD)
+
+Le niveau physique tient compte des particularités de chaque SGBDR :
+- Types des données (INT, VARCHAR, CHAR, BOOL…) 
+- Contraintes (unique, nullable, auto-incrémentation…)
+- ....
+
+Schéma final de base de donées : le nom de l’entité devient un nom de table, les propriétés de l’entité deviennent les champs de la table. Il faut également penser à leur attribuer les bons types (int, varchar, boolean, etc.). Les identifiants deviennent des clés primaires  
+![Schéma](./img/26.png)
+
+![Schéma](./img/13.png)
+
 
 
 * ## Les clés étrangères
 
-Maintenant que tu as défini les types de relation, il va falloir trouver un moyen un peu plus concret qu’un trait sur un schéma, pour indiquer à une table qu’elle est reliée à une autre table.
-Considère à nouveau l’exemple Many-To-One vu juste au-dessus. Le 1 de la relation 1-N est côté wizard tandis que le N est côté school. Ce sens est très important, car c’est maintenant dans la table wizard que tu vas venir ajouter un nouveau champ, qui aura pour but de relier les deux tables.
-Tu l’appelleras par exemple school_id. Pour chaque tuple, le but de ce champ sera de prendre la valeur de la clé primaire de la table school, correspondant à l’école dans laquelle ce sorcier est inscrit.
-![Foreign key](./img/14.png)
+Les clés étrangères servent à indiquer à une table qu’elle est reliée à une autre table.  
+En règle générale, une clé étrangère fait référence à une clé primaire d’une autre table (puisque la clé primaire permet d’identifier formellement un tuple) mais tu pourrais très bien faire référence à un autre champ “unique” de la table si celle-ci en possède.
 
-Ainsi, si le sorcier avec l’id 1 (par exemple Harry Potter) est inscrit à Hogwarts (avec l’id 2 dans la table school, le champ school_id de la table wizard prendra la valeur 2. Les tables sont donc reliées par ces champs school_id de la table wizard et id de la table school. Et le tour est joué !
 
-Enfin presque… car celui-dont-on-ne-doit-pas-requêter-le-nom ne rôde jamais loin de ta console MySQL. Imagine (via un INSERT ou un UPDATE) que la valeur 8 soit insérée dans le school_id d’un élève, alors que cette école n’existerait pas dans la table school.
-De même, si le tuple 2 est effacé de la table school, Harry se retrouverait alors relié à un tuple qui n’existe plus. Tu te retrouves avec une incohérence dans l’intégrité de tes données, ce qui entraînera à coup sûr divers bugs dans ton application !
+Les règles de création des clés étrangères dépendent du type de relation entre les entités.
 
-Pour pallier ce problème, il existe un type de contrainte appelée clé étrangère ou foreign key. Elle permet d’empêcher une insertion dans la table wizard si la valeur du school_id associée n’existe pas dans la table school (idem, elle empêche la suppression d’un tuple qui serait relié à des données dans une autre table). Ainsi, cela te protège de nombreuses erreurs. C’est donc indispensable pour conserver des données saines et cohérentes.
+**1. Many To One (1-N)**
 
-Pour définir une contrainte de clé étrangère, une fois le champ school_id créé, il faut taper la commande SQL suivante :
+C’est le type de relation la plus fréquente et la plus simple à gérer. Un sorcier est dans une seule école (côté 1 de la relation 1-N), mais une école peut recevoir plusieurs sorciers (côté N de la relation 1-N). Dans ce cas, tu ajoutes toujours dans la table ayant la plus faible cardinalité (0 ou 1), ici wizard, la clé étrangère référençant la table de plus haute cardinalité (le N), ici school, qu'on appellera par exemple `school_id`.   
+
+![Foreign key](./img/25.png)
+
+Ainsi, si chaque sorcier aura un champ `school_id` qui aura pour valeur l'id de l'école dans laquelle il est inscrit. Les tables sont donc reliées par les champs `school_id` de la table wizard et `id`de la table school.
+
+Cependant on peut toujours à ce stade affecter un `school_id` à un sorcier d'une école qui n'existerait pas. On peut également supprimer une école et dans ce cas un sorcier se retrouverait avec une école qui n'existerait plus. On se retrouverait alors avec une incohérence dans l’intégrité de tes données, ce qui entraînera à coup sûr divers bugs dans ton application !
+
+Pour pallier ce problème, il existe un type de contrainte appelée clé étrangère ou foreign key. Elle permet d’empêcher une insertion dans la table `wizard` si la valeur du `school_id` associée n’existe pas dans la table school (idem, elle empêche la suppression d’un tuple qui serait relié à des données dans une autre table). Ainsi, cela te protège de nombreuses erreurs. C’est donc indispensable pour conserver des données saines et cohérentes.
+
+Pour définir une contrainte de clé étrangère, une fois le champ `school_id` créé, il faut taper la commande SQL suivante :
 
 ``` sql
 ALTER TABLE wizard
@@ -501,22 +533,49 @@ Dans les deux cas, les mots-clés à retenir sont :
     REFERENCES () : et ce dernier mot-clé indique que la clé étrangère fait référence ici au champ id de la table school.
 
 
-Remarque : en règle générale, une clé étrangère fait référence à une clé primaire d’une autre table (puisque la clé primaire permet d’identifier formellement un tuple) mais tu pourrais très bien faire référence à un autre champ “unique” de la table si celle-ci en possède.
-Les règles de création des clés étrangères dépendent du type de relation entre les entités.
-One To One : reprend l’exemple donné plus haut d’un Sorcier (table wizard) qui possède une et une seule Baguette (table wand). Dans ce cas, il y a deux solutions possibles. Soit la table wizard prend une clé étrangère wand_id, soit la table wand prend une clé étrangère wizard_id. C’est donc à toi de choisir la solution qui te semble la plus pratique, en fonction des requêtes que tu seras amené à faire.
-Many To One : c’est le type de relation la plus fréquente et la plus simple à gérer. Ici un sorcier est dans une seule école (côté 1 de la relation 1-N), mais une école peut recevoir plusieurs sorciers (côté N de la relation 1-N). Dans ce cas, tu ajoutes toujours dans la table ayant la plus faible cardinalité (0 ou 1), ici wizard, la clé étrangère référençant la table de plus haute cardinalité (le N), ici school. En effet, un sorcier est bien relié à une école. Par contre, cela n’aurait pas de sens de créer une clé wizard_id pour une école, puisqu’une école peut avoir plusieurs élèves, car tu ne peux pas mettre une liste d’id dans un champ.
-Many To Many : le dernier (le plus compliqué) des cas est la relation N-M. Ici un élève peut emprunter plusieurs livres, et un livre peut être emprunté par plusieurs élèves. Dans ce cas, tu ne peux ni mettre une clé book_id dans wizard, ni mettre une clé wizard_id dans book ! Il va donc falloir créer une nouvelle table intermédiaire qui va contenir les deux clés étrangères ! Cette table pourra s’appeler par exemple borrowing (emprunt). Selon les cas, la clé primaire pourra être composite, c’est-à-dire que l’unicité sera définie par le couple de clés étrangères wizard_id ET book_id. Dans cet exemple, un même sorcier peut emprunter un même livre à différentes dates. Dans ce cas, il faudrait plutôt créer une clé primaire auto-incrémentée pour s’assurer de l’unicité de la clé. Si besoin, cette table intermédiaire peut également accueillir des champs supplémentaires (par exemple date de réservation) qui ne seraient à leur place ni dans la table wizard, ni dans la table book.
-Remarque : ces différentes règles te permettent de passer d’un MCD à un MLD (Modèle Logique de Données). La partie MPD (Modèle Physique de données) est moins utile de nos jours. Elle est censée prendre en compte les spécificités du SGBDR utilisé, mais celles-ci étant beaucoup plus proches aujourd’hui qu’à l’époque où Merise à été créé, cette étape est aujourd’hui bien moins pertinente. Tes MLD/MPD peuvent être “fusionnés”. Il faut que ton MLD soit le reflet de ta base finale (telle qu’elle sera écrite en SQL), avec toutes les informations sur les tables, leurs champs et les types utilisés pour ces champs.
+**2. One To One (1-1)**
 
-Cas 1 : Un Sorcier
+One To One : reprend l’exemple donné plus haut d’un Sorcier (table `wizard`) qui possède une et une seule Baguette (table `wand`). Dans ce cas, il y a deux solutions possibles. Soit la table `wizard` prend une clé étrangère `wand_id`, soit la table `wand` prend une clé étrangère `wizard_id`. C’est donc à nous de choisir la solution qui te semble la plus pratique, en fonction des requêtes que tu seras amené à faire.
 
 La relation reste donc de type 1-1. Ici, on choisit de mettre une clé wizard_id dans la table pet, mais le contraire est tout à fait possible.
 
 ![one-to-one](./img/15.png)
-Cas 2 : Un Sorcier peut avoir de 0 à N Familiers et un Familier 0 à N Sorciers
+
+**3. Many To Many (N-M)**
+
+Ce derniercas, et le plus compliqué est la relation N-M. Ici un élève peut emprunter plusieurs livres, et un livre peut être emprunté par plusieurs élèves. 
+Dans ce cas, on ne peut ni mettre une clé `book_id` dans `wizard`, ni mettre une clé `wizard_id` dans `book`.
+Il va donc falloir créer une nouvelle table intermédiaire qui va contenir les deux clés étrangères. Cette table pourra s’appeler par exemple `borrowing` (emprunt). Selon les cas, la clé primaire pourra être composite, c’est-à-dire que l’unicité sera définie par le couple de clés étrangères `wizard_id` ET `book_id`. Dans cet exemple, un même sorcier peut emprunter un même livre à différentes dates. Dans ce cas, il faudrait plutôt créer une clé primaire auto-incrémentée pour s’assurer de l’unicité de la clé. Si besoin, cette table intermédiaire peut également accueillir des champs supplémentaires (par exemple date de réservation) qui ne seraient à leur place ni dans la table wizard, ni dans la table book.
 
 Dans ce cas, la relation est de type N-M. Il faut donc créer une table intermédiaire, appelée ici wizard_pet. La clé primaire est composite, car l’unicité est vérifiée par le couple des deux clés étrangères wizard_id et pet_id.
 ![many to many](./img/16.png)
+
+Remarque : ces différentes règles te permettent de passer d’un MCD à un MLD (Modèle Logique de Données). La partie MPD (Modèle Physique de données) est moins utile de nos jours. Elle est censée prendre en compte les spécificités du SGBDR utilisé, mais celles-ci étant beaucoup plus proches aujourd’hui qu’à l’époque où Merise à été créé, cette étape est aujourd’hui bien moins pertinente. Tes MLD/MPD peuvent être “fusionnés”. Il faut que ton MLD soit le reflet de ta base finale (telle qu’elle sera écrite en SQL), avec toutes les informations sur les tables, leurs champs et les types utilisés pour ces champs.
+
+* ## Les contraintes d'intégrité
+
+Règles à suivre quand des enregistrements de tables reliées sont mis à jour ou supprimés. Exemple : 
+
+J’efface une école de la table school, reliée à des élèves de la table student
+- Si aucune contrainte n’est définie, l’école est effacée et les élèves reliés à cette école se retrouvent alors “orphelins”
+- Si une contrainte est définie sans option, la suppression est refusée car des élèves sont associés à cette école (par contre, on pourra effacer un élève qui lui n’est relié qu’à une et une seule école !)
+- Si une option CASCADE est définie, les élèves associés à école seront automatiquement supprimés
+
+``` sql
+CREATE TABLE student
+  	…
+  PRIMARY_KEY(id)
+  FOREIGN KEY (school_id)
+	REFERENCES school(id)
+  	ON DELETE CASCADE
+  	ON UPDATE NO ACTION;
+
+```
+Options après `ON DELETE`  et `ON UPDATE` :
+- `CASCADE` : si je tente de supprimer la clé primaire, alors supprime tous les enregistrements avec l'id associé
+- `SET NULL` : si je tente de supprimer la clé primaire, alors met NULL dans les enregistrements avec l'id associé
+- `NO ACTION` : si je tente de supprimer la clé primaire, laisse les enregistrements dépendants avec l'id associé (perte d'intégrité)
+- `RESTRICT` : si je tente de supprimer la clé primaire, empêche la suppression si id référencée ailleurs
 
 
 
@@ -556,53 +615,280 @@ SELECT w.firstname, w.lastname, s.name as school_name
 FROM wizard as w
 JOIN school as s ON s.id=w.school_id;
 ```
-## Jointures avancées
+
+Autre Exemple :
+Récupération de tous les élèves de l’école de Bordeaux. Les lignes renvoyées sont celles vérifiant la condition. Elles contiennent les champs des deux tables
+
+``` sql
+SELECT st.firstname, st.lastname, sc.city
+       FROM student AS st
+       JOIN school AS sc ON sc.id=st.school_id
+       WHERE sc.city = 'Bordeaux';
+```
+Retourne :
+``` sql
+firstname |  lastname  |  city
+----------+------------+----------
+Arthur    | Pendragon  | Bordeaux 
+Lancelot  | Du Lac     | Bordeaux
+```
+
+* ## Jointures Avancées
+
+**Jointures Imbriquées**
+
+Récupération de tous les élèves dans une école proposant le langage PHP
+``` sql
+SELECT firstname, name
+       FROM student AS st
+       JOIN school AS sc ON sc.id=st.school_id
+         JOIN teaching AS t ON t.school_id = sc.id
+           JOIN language AS la ON t.language_id=la.id
+       WHERE la.language='PHP';
+```
+![illus](./img/27.png)
 
 https://sql.sh/cours/jointures#google_vignette
 
-Il existe plusieurs autres types de jointures. Tu vas t’intéresser ici aux jointures RIGHT et LEFT. Elles sont assez simples à comprendre. Reprends l’exemple : la table wizard possède deux tuples non reliés à une école. Cependant, comment faire si tu souhaites ressortir les informations sur tous les élèves, même ceux non inscrits dans une école ?
 
-Dans ce cas, c’est la requête LEFT JOIN qui va t’être utile. Elle permet, comme son nom l’indique, de ressortir toutes les informations de la table de gauche (à gauche du JOIN), même si celles-ci ne sont reliées à aucune information de la table de droite (en plus des données renvoyées par un JOIN classique). Comme le montre l’exemple ci-dessous, pour ces lignes, la colonne school_name prend la valeur NULL.
+**LEFT JOIN & RIGTH JOIN**
 
-Pour vous montrer l'utilité d'un LEFT JOIN, nous allons mettre à jour le champ school_id de toute la famille pour lui donner la valeur NULL.
+Par exemple la table wizard possède deux tuples non reliés à une école. Cependant, comment faire si tu souhaites ressortir les informations sur tous les élèves, même ceux non inscrits dans une école ?
 
+Dans ce cas, c’est la requête `LEFT JOIN` qui va t’être utile. Elle permet, comme son nom l’indique, de ressortir toutes les informations de la table de gauche (à gauche du JOIN), même si celles-ci ne sont reliées à aucune information de la table de droite (en plus des données renvoyées par un JOIN classique). 
+
+On supprime l'école de certains élèves :
 ``` sql
 UPDATE wizard SET school_id=NULL WHERE lastname='weasley';
 ```
-
+On fait la requête
 ``` sql
 SELECT w.firstname, w.lastname, s.name  
 FROM wizard AS w 
 LEFT JOIN school AS s ON s.id=w.school_id;
 ```
-De la même manière, si tu veux récupérer toutes les écoles, même celles sans étudiants, tu peux utiliser RIGHT JOIN et cette fois, pour les écoles sans étudiant, les champs firstname et lastname seront NULL.
+On obtient :
+``` sh
++-----------+-------------+--------------------------------------------+
+| firstname | lastname    | name                                       |
++-----------+-------------+--------------------------------------------+
+| harry     | potter      | Hogwarts School of Witchcraft and Wizardry |
+| hermione  | granger     | Hogwarts School of Witchcraft and Wizardry |
+| lily      | potter      | Hogwarts School of Witchcraft and Wizardry |
+| ron       | weasley     | NULL                                       |
+| ginny     | weasley     | NULL                                       |
+| fred      | weasley     | NULL                                       |
+| george    | weasley     | NULL                                       |
+| arthur    | weasley     | NULL                                       |
+| molly     | weasley     | NULL                                       |
+| drago     | malefoy     | Hogwarts School of Witchcraft and Wizardry |
+| albus     | dumbledore  | Hogwarts School of Witchcraft and Wizardry |
+| severus   | rogue       | Hogwarts School of Witchcraft and Wizardry |
+| tom       | jédusor     | Hogwarts School of Witchcraft and Wizardry |
+| dudley    | dursley     | Hogwarts School of Witchcraft and Wizardry |
+| fleur     | delacour    | Beauxbatons Academy of Magic               |
+| gabrielle | delacour    | Beauxbatons Academy of Magic               |
+| viktor    | krum        | Durmstrang Institute                       |
+| gellert   | grindelwald | Durmstrang Institute                       |
+| babajide  | akingbade   | Uagadou School of Magic                    |
++-----------+-------------+--------------------------------------------+
+```
+On fait un INNER JOIN classique, on n'aurait pas obtenu les élèves qui ne seraient inscrits dans aucune école.
 
+
+De la même manière, si tu veux récupérer toutes les écoles, même celles sans étudiants, tu peux utiliser `RIGHT JOIN` et cette fois, pour les écoles sans étudiant, les champs firstname et lastname seront NULL.
 
 ``` sql
 SELECT w.firstname, w.lastname, s.name  
 FROM wizard AS w
 RIGHT JOIN school AS s ON s.id=w.school_id;
 ```
+On obtiendrait :
+``` sql
++-----------+-------------+----------------------------------------------+
+| firstname | lastname    | name                                         |
++-----------+-------------+----------------------------------------------+
+| fleur     | delacour    | Beauxbatons Academy of Magic                 |
+| gabrielle | delacour    | Beauxbatons Academy of Magic                 |
+| NULL      | NULL        | Castelobruxo                                 |
+| viktor    | krum        | Durmstrang Institute                         |
+| gellert   | grindelwald | Durmstrang Institute                         |
+| harry     | potter      | Hogwarts School of Witchcraft and Wizardry   |
+| hermione  | granger     | Hogwarts School of Witchcraft and Wizardry   |
+| lily      | potter      | Hogwarts School of Witchcraft and Wizardry   |
+| drago     | malefoy     | Hogwarts School of Witchcraft and Wizardry   |
+| albus     | dumbledore  | Hogwarts School of Witchcraft and Wizardry   |
+| severus   | rogue       | Hogwarts School of Witchcraft and Wizardry   |
+| tom       | jédusor     | Hogwarts School of Witchcraft and Wizardry   |
+| dudley    | dursley     | Hogwarts School of Witchcraft and Wizardry   |
+| NULL      | NULL        | Ilvermorny School of Witchcraft and Wizardry |
+| NULL      | NULL        | Koldovstoretz                                |
+| NULL      | NULL        | Mahoutokoro School of Magic                  |
+| babajide  | akingbade   | Uagadou School of Magic                      |
++-----------+-------------+----------------------------------------------+
+```
+
+    LEFT JOIN renvoie TOUS les enregistrements de la table de gauche (dans le FROM) même quand il n’y a pas de correspondance avec la table de droite (dans ce cas on renvoie NULL)
+    (INNER) JOIN La plus utilisée. 
+
+    Renvoie les enregistrements quand la condition (après le ON) est remplie. Seuls les enregistrements communs des tables A et B sont retournés 
+
+    RIGHT JOIN renvoie TOUS les enregistrement de la table de droite (après le JOIN) même quand il n’y a pas de correspondance avec la table de gauche (dans ce cas il renvoie NULL)
+
+https://sql.sh/cours/jointures
+
+**UNION**
+UNION permet de cumuler les résultats de deux requêtes
+``` sql
+SELECT firstname FROM student WHERE firstname LIKE 'A%'
+UNION
+SELECT firstname FROM student WHERE firstname LIKE 'L%'
+
+```
+Retourne :
+``` sh
+firstname
+----------
+Arthur
+Lancelot
+Léodagan
+```
+S’il y a des doublons dans les résultats des deux requêtes, ils ne sont pas affichés. Si on veut les afficher, il faut utiliser UNION ALL
+
+``` sql
+
+
+```
 
 ##### [Return to Top](#notes-sql)
 # **SQL Avancé**
-* ## Fonctions SQL
 
-Fonction d'agrégation :
+* ## WHERE Avancée
+
+**AND/OR**
+``` sql
+SELECT firstname, lastname FROM student WHERE firstname='Arthur' AND lastname='Pendragon';
+```
+Les AND/OR peuvent se suivre et se cumuler.
+
+**LIKE**
+``` sql
+SELECT firstname FROM student WHERE firstname LIKE 'L%';
+```
+Le symbole % sert de Joker. L’exemple renvoie “Lancelot”, “Léodagan”...  
+Remarque : MySQL est insensible à la casse, donc "L%" équivaut à "l%", ce qui n’est pas le cas de tous les SGBDR.
 
 ``` sql
+SELECT * FROM student WHERE firstname LIKE '%l%';
+```
+Renvoie Lancelot, Leodagan, Perceval, Merlin
+
+**BETWEEN**
+``` sql
+SELECT city, capacity FROM school WHERE capacity BETWEEN 20 AND 40;
+```
+
+**IS NULL/IS NOT NULL**
+``` sql
+SELECT * FROM school WHERE capacity IS NOT NULL;
+```
+
+**IN** : 
+``` sql
+SELECT * FROM school WHERE city IN ('Reims', 'Lille', 'Biarritz');
+```
+On peut faire des requêtes imbriquées mais il faut mieux préférer les jointures :
+``` sql
+SELECT * FROM student
+	   WHERE school_id IN (
+           SELECT id FROM school WHERE capacity>10);
+```
+
+* ## Fonctions SQL
+
+**DISTINCT**
+``` sql
+SELECT DISTINCT(firstname) FROM student;
+```
+Si un prénom est présent plusieurs fois, le distinct permet de ne l’afficher qu’une seule fois. Les doublons sont ainsi éliminés.
+
+**CONCAT**
+``` sql
+SELECT CONCAT(firstname,' ',lastname) AS fullname FROM student;
+```
+Retourne
+``` sh
+fullname
+-----------------
+Arthur Pendragon
+Lancelot Du Lac
+```
+**LENGTH**
+``` sql
+SELECT firstname, LENGTH(firstname) AS len
+    FROM student
+    WHERE LENGTH(firstname) > 7;
+```
+Retourne :
+``` sh
+firstname   |  len
+------------+----------
+Lancelot    |  8
+Perceval    |  8
+Guenièvre   |  9
+```
+
+Il existe également de nombreuses autres fonctions qui ont pour but de manipuler des chaînes (LOWER(), UPPER(), LENGTH(), REPLACE(), SUBSTRING(), TRIM() ...).
+
+* ## Fonctions Mathématiques
+
+**RAND**
+Permet de générer un nombre aléatoire
+
+**ROUND**
+Permet d'arrondir un décimal
+
+Ou encore ABS(), SIN(), COS(), EXP(), LOG(), PI()...
+
+``` sql
+SELECT price, ROUND(price,1) AS rounded_price FROM product;
+```
+Retourne
+``` sh
+price | rounded_price
+------+---------------
+20.54 | 20.5
+20.99 | 21
+```
+
+* ## Fonctions Date
+
+**NOW()** : renvoie la date du jour
+**MONTH()** : extrait le numéro de mois d'une date
+**DATEDIFF()**
+
+* ## Fonctions D'agrégation
+
+Fonctions permettant de réaliser des calculs sur un ensemble de résultats.
+
+**COUNT()** compte le nombre de résultats
+**SUM()** calcul la somme pour un champ donné
+**MAX()** renvoi la valeur max pour un champ donné
+**MIN()** renvoi la valeur min pour un champ donné
+**AVG()** calcul la moyenne pour un champ donné
+
+
+``` sql
+SELECT AVG(note) as average FROM note;
+SELECT MIN(note), MAX(note) FROM note;
+SELECT SUM(payment) AS total, AVG(payment) AS avg FROM bribe;
 SELECT count(*) as nb_school FROM school;
 ```
-Il existe plusieurs autres fonctions permettant d’effectuer un calcul sur un ensemble de tuples. En voici quelques-unes parmi les plus utiles :
+Attention on ne peut pas mélanger ce type de reqiête dite d'agrégation avec des requêtes classiques ligne par ligne.
 
-    SUM(champ) : effectue la somme des valeurs pour le champ entre les parenthèses.
-    AVG(champ) : effectue la moyenne des valeurs pour le champ entre les parenthèses.
-    MIN(champ) et MAX(champ) : retourne la valeur minimale/maximale du champ sélectionné.
-
-
-Il existe également de nombreuses autres fonctions qui ont pour but de manipuler des chaînes (LOWER(), UPPER(), LENGTH() ...), effectuer des calculs mathématiques (ROUND(), ABS(), SIN() ...) ou manipuler des dates (DATEDIFF(), MONTH(), NOW() ...). Reporte-toi aux ressources pour voir une liste exhaustive de ces dernières. Voici un exemple avec une fonction de concaténation :
 
 https://sql.sh/fonctions
+https://fr.wikibooks.org/wiki/MySQL/Fonctions
 
 
 * ## GROUP BY / HAVING
@@ -614,8 +900,43 @@ La syntaxe du GROUP BY est très simple. Elle attend une liste de champs sur les
 Par exemple, voici comment récupérer le nombre d'étudiants par école :
 
 ``` sql
-SELECT s.name, COUNT(*) as nb_student FROM wizard w INNER JOIN school s ON s.id=school_id GROUP BY s.id;
+SELECT s.name, COUNT(*) as nb_student 
+    FROM wizard w 
+    INNER JOIN school s ON s.id=school_id 
+    GROUP BY s.id;
 ```
+
+``` sql
+SELECT region, count(*) AS nb FROM student
+       GROUP BY region
+       ORDER BY nb DESC
+```
+Retourne
+``` sh
+ region              | nb
+---------------------+----------
+Ile de France        | 12
+Auvergne-Rhône Alpes | 10
+Centre               | 6
+Occitanie            | 3
+```
+Il est possible d'avoir plusieurs champs dans une clause GROUP BY :
+``` sql
+SELECT region, city, count(*) AS nb
+       FROM student
+       GROUP BY region, city
+       ORDER BY nb DESC
+```
+``` sh
+region      	    |  city 	    | nb
+---------------------+------------+--------
+Ile de France        | Paris  	    | 12
+Auvergne-Rhône Alpes | Lyon       | 10
+Centre               | Orléans    | 3
+Centre               | La Loupe   | 2
+Occitanie            | Toulouse   | 1
+```
+
 
 Il est possible d’aller encore plus loin dans les regroupements, en y ajoutant des critères de filtre sur ces groupes. Par exemple, si tu souhaites ne ressortir que les groupes ayant plus de trois élèves, tu peux écrire :
 
@@ -632,6 +953,52 @@ Le HAVING a donc un fonctionnement très similaire à une clause WHERE, puisqu�
 En effet, lorsque tu fais un SELECT, tu ressors un certain nombre de tuples. Un WHERE va imposer un filtre qui va potentiellement diminuer ce nombre de résultats. Si tu ajoutes ensuite un GROUP BY, le regroupement ne se fera QUE sur les tuples préalablement filtrés par le WHERE. Une fois le regroupement fait, si tu ajoutes un HAVING, ce dernier s’appliquera sur les résultats du regroupement. C’est pour cela qu’un WHERE s’écrit toujours avant un bloc GROUP BY/HAVING.
 
 
+Exemple :
+``` sql
+SELECT city, count(*) as nb FROM student
+       GROUP BY city
+       HAVING nb>2
+       ORDER BY nb DESC
+```
+``` sh
+ city     |  nb
+----------+---------
+Paris     | 12
+Lyon      | 10
+Orléans   | 3
+```
+
+* ## Administration avancée
+Il est possible de créer/supprimer des utilisateurs 
+
+``` sql
+CREATE USER 'myuser'@'localhost' IDENTIFIED BY 'mypassword';
+DROP USER 'myuser'@'localhost';
+```
+Et de gérer très finement leurs droits
+- Limiter le type de requête (par exemple pas de DELETE ou d’INSERT, mais SELECT autorisé)
+- Limiter les tables accessibles 
+
+``` sql
+GRANT ALL ON mydb TO 'perceval'@'localhost';
+// Perceval a tous les droits sur la bdd mydb
+GRANT SELECT, UPDATE ON mydb.Eleve TO 'caradoc'@'localhost';
+// Caradoc n’a que les droits de SELECT et UPDATE et uniquement sur la table Eleve de la bdd mydb
+```
+* ## Administration avancée
+
+**Procédure stockée** : Suite d’instructions SQL définies par un nom 
+et enregistrées dans la base de données elle-même. Il est possible 
+d’appeler la procédure par son nom et d’exécuter ces instructions. 
+Elles peuvent être comparées à des fonctions.
+
+**Transaction** : Suite de requêtes dont l'exécution se fait par bloc. Si tout le bloc d’instruction n’est pas exécuté (erreur), il est possible de revenir en arrière (ROLLBACK). Très utile pour s’assurer de l'intégrité des données (notamment des données sensibles).
+
+**Trigger** : Instructions associées à une table qui se déclenchent lorsqu’un événement prédéterminé survient (INSERT, UPDATE…)
+
+**Table temporaire** : Permet de stocker des résultats dans une table à durée de vie limitée (supprimées si on se déconnecte du SGBDR) : gain de performance pour des grosses requêtes répétitives.
+
+https://openclassrooms.com/fr/courses/6971126-implementez-vos-bases-de-donnees-relationnelles-avec-sql?archived-source=1959476
 
 
 
