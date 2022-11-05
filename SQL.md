@@ -389,6 +389,18 @@ DROP TABLE table1, table2 ;
 ``` sql
 DROP DATABASE test ;
 ```
+
+* ## Exporter la BDD
+
+``` sql
+mysqldump -u [username] -p [database-you-want-to-dump] > [path-to-place-data-dump];
+```
+Exemple :
+``` sql
+mysqldump -u florent -p mydatabase > /home/myuser/database-dump.sql
+```
+
+
 ##### [Return to Top](#notes-sql)
 # **Bilan**
 ## Création base, table et insertion de valeur :
@@ -947,7 +959,20 @@ SELECT s.name, COUNT(*) AS nb_student
   GROUP BY school_id
   HAVING nb_student > 3;
 ```
-
+Donne :
+``` sh
++----------------------------------------------+------------+
+| name                                         | nb_student |
++----------------------------------------------+------------+
+| Castelobruxo                                 |          8 |
+| Hogwarts School of Witchcraft and Wizardry   |         29 |
+| Ilvermorny School of Witchcraft and Wizardry |          4 |
+| Koldovstoretz                                |          9 |
+| Ugadou School of Magic                       |          9 |
+| Beauxbatons Academy of Magic                 |          7 |
+| Mahoutokoro School of Magic                  |          6 |
++----------------------------------------------+------------+
+```
 Le HAVING a donc un fonctionnement très similaire à une clause WHERE, puisqu’il a également besoin d’une condition. Cependant, ces deux clauses sont différentes et ne sont pas interchangeables.
 
 En effet, lorsque tu fais un SELECT, tu ressors un certain nombre de tuples. Un WHERE va imposer un filtre qui va potentiellement diminuer ce nombre de résultats. Si tu ajoutes ensuite un GROUP BY, le regroupement ne se fera QUE sur les tuples préalablement filtrés par le WHERE. Une fois le regroupement fait, si tu ajoutes un HAVING, ce dernier s’appliquera sur les résultats du regroupement. C’est pour cela qu’un WHERE s’écrit toujours avant un bloc GROUP BY/HAVING.
