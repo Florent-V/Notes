@@ -11,7 +11,10 @@
 7. [AutoLoading](#autoloading)
 8. [Polymorphisme](#le-polymorphisme)
 9. [Propriétés et méthodes de classe](#propric3a9tc3a9s-et-mc3a9thodes-de-classe-1)
-10. [Abstraction]()
+10. [Abstraction](#abstraction)
+11. [Exceptions](#exceptions)
+12. [Interfaces](#implémentations-dinterfaces)
+13. [Static]()
 
 
 ##### [Return to Top](#notes-poo)
@@ -926,11 +929,13 @@ abstract class Vehicle
 ```
 En aucun cas, cette classe abstraite ne doit donc être intanciée en l'état et désormais cela n'est plus possible.
 
+Il en va de même pour une classe `container` par exemple qui est bien trop vague. On va donc créer des classes enfants de la classe `container` pour donner un peu plus de sens au `container`. Et on va donc rendre cette classe container `abstraite` avec le mot clé `abstract`. On est obligé de passer par une classe fille qui est bien plus concrète.
+
 Il est possible d'appliquer le mot clé `abstract` à une **méthode** précise. Dans ce cas, la méthode devra être **obligatoirement être redéfinie dans toutes les classes filles.**
 
 Imaginons par exemple une méthode permettant d’indiquer comment changer une roue. Entre une voiture, un vélo ou un skate, l’implémentation de la méthode va être totalement différente ! Pourtant, il est possible de changer une roue sur tous ces véhicules, c’est donc bien un point commun entre eux.
 
-Une méthode abstraite `changeWheel()` va alors être définie dans la classe parente `Vehicle`, afin **d’obliger** chaque fille à l’implémenter à sa manière. De ce fait, le corps d’une méthode abstraite est toujours vide (puisque l’implémentation dépend de la classe fille) et **les accolades ne sont pas ajoutées.**
+Une méthode abstraite `changeWheel()` va alors être définie dans la classe parente `Vehicle`, afin **d’obliger** chaque fille à l’implémenter à sa manière. De ce fait, le corps d’une méthode abstraite est toujours vide (puisque l’implémentation dépend de la classe fille) et **les accolades ne sont pas ajoutées.** Il y a juste un point virgule à la fin.
 ``` php
 <?php
 abstract class Vehicle
@@ -965,6 +970,248 @@ Il n’est pas obligatoire (comme avec `abstract`) de rendre toute la classe `fi
 
 ![Exemple](./img/06.png)
 
+
+##### [Return to Top](#notes-poo)
+# **Exceptions**
+* ## Qu'est-ce qu'une exception ?
+
+Pour gérer les erreurs, on peut utiliser des "if" mais il y a une classe qui permet de gérer les erreurs : la classe `Exception`.
+Voici un exemple avec une fonction qui permet d'inverser un entier. Il est impossible de diviser par zéro. C'est avec une `Exception` que l'on va gérer l'erreur :
+
+``` php
+<?php
+function invert(int $number): float
+{
+   if ($number === 0) {
+       throw new Exception('division by zero');
+   }
+   return 1 / $number;
+}
+```
+C'est le mot clé `throw` qui permet d'indiquer que l'on souhaite lever une exception. Il faut ensuite instancier un objet de type `Exception` (ou d'une classe plus précise héritant d'exception : il en existe plusieurs). L'objet demande un paramètre qui sera le message d'erreur à afficher si besoin.
+
+
+* ## Comment capturer une exception ?
+
+Par défaut, si une exception est lancée (via `throw`), le code s’arrête. Ce n’est pas toujours pratique. Pour traiter l’erreur “proprement” et non stopper brutalement l'exécution, grâce aux exceptions on va pouvoir “capturer” chaque erreur, et décider de comment les traiter. Par exemple, on peut souhaiter enregistrer le problème dans des logs, envoyer un mail à l’administrateur, afficher un message d’erreur personnalisé à l’utilisateur, etc.
+
+Pour capturer une erreur, on va utiliser le mot clé try :
+
+``` php
+<?php
+try {
+    echo division(5) . PHP_EOL;
+    echo division(0) . PHP_EOL;
+} catch(Exception $e){
+    // code to manage exceptions
+    echo 'Exception received  : ' . $e->getMessage() . PHP_EOL;
+} finally {
+    echo "End !" . PHP_EOL;
+}
+```
+
+On entoure le code par l’instruction `try`. Si une exception est levée durant l’exécution de ce code, l'exécution ne s’arrête pas tout de suite. L’exception est alors “capturée” dans le bloc `catch` qui suit. `catch()` prend un paramètre typé par un nom d'`Exception`.
+
+Remarque : on peut enchaîner plusieurs bloc `catch`, chacun traitant alors un type d’exception de type précis. L’ordre des blocs `catch` est alors important, traitant les exceptions des plus précises aux plus générales. Tu peux également finir par un bloc `finally` : le code contenu à l’intérieur sera alors exécuté dans tous les cas, qu’une erreur ait été lancée ou non.
+
+
+``` php
+<?php
+     try{
+       // Code to try
+    } catch(LogicException $e){
+       // code to manage exceptions
+    } catch(Exception $e){
+       // code to manage all other exceptions
+    } finally{
+       // this code is always executed
+   }
+```
+
+Autre exemple :
+
+``` php
+class Container
+{
+  public function fill(int $volume): void
+  {
+      if ($volume < 0) {
+          throw new RuntimeException('Negative volume');
+      }
+      if ($volume < $this->capacity - $this->filling) {
+          $this->filling += $volume;
+      } else {
+          throw new RangeException('Volume error');
+      }
+  }
+}
+```
+
+``` php
+$amphora = new Amphora(50);
+try {
+  $amphora->fill(-10); //Negative, throw RuntimeException
+  $amphora->empty(20); 
+  $message = 'Filling OK';
+} catch (RangeException $exception) {
+   $message = $exception->getMessage(); 
+} catch (RuntimeException $exception) {
+   $message = $exception->getMessage(); // error message
+   $amphora->setFilling(0); // reset filling
+} finally {
+   // always Executed
+   echo $message . ': ' . $amphora->getFilling(); 
+}
+$boat->load($amphora); 
+```
+
+
+
+* ## Les exceptions les plus courantes
+
+![exceptions](./img/30.png)
+
+Il existe de nombreuses classes d’`Exception`, héritant toutes de la classe générique Exception. Chacune d’entre elles permet de spécifier plus précisément un type d’erreur. Par exemple:
+
+- La classe `LogicException` : représente les erreurs dans la logique du programme. Ce type d'exceptions doit obligatoirement faire l'objet d'une correction de ton code.
+
+- La classe `RuntimeException` : émise quand une erreur est rencontrée durant l'exécution.
+
+Remarque : en tant que développeur, il est tout à fait possible (et même assez fréquent), de créer ses propres classes d’exception (héritant forcément d’une classe Exception préexistante) correspondant à la logique métier de son programme.
+
+https://www.php.net/manual/fr/class.exception.php  
+https://www.php.net/manual/fr/language.exceptions.extending.php
+
+
+##### [Return to Top](#notes-poo)
+# **Implémentations d'interfaces**
+
+https://www.php.net/manual/fr/language.oop5.interfaces.php
+
+Les interfaces sont souvent comparées à des **contrats**, qu'une classe implémentant une interface devra **obligatoirement suivre**. L'interface ne sert à rien d'autre car elle ne contient **aucune logique**, aucun code métier. Les interfaces contiennent seulement des **définitions de méthodes** (les méthodes sont vides), comme les méthodes abstraites. Les classes qui implémentent ces interfaces seront donc obligées de définir les méthodes contenues dans ces interfaces dans leur corps. Comme une classe abstraite, on ne peut pas directement utiliser une interface.  
+
+
+L'**abstraction** est liée au concept d'**héritage**, il doit donc y avoir un lien logique entre la classe mère et sa fille. Mais dans certains cas, deux **classes totalement différentes** peuvent avoir un certain nombre de **comportements commun**. Il n'est alors pas possible de définir un héritage, mais les interfaces viendront définir des règles pour que ce comportement commun soit implémenté de manière similaire.
+
+Le polymorphisme permet de donc de typer un argument d'une fonction par une interface. Une classe qui hérite d'une autre et qui implémente une interface peut donc être typée par son interface, sa classe parente ou sa propre classe.
+
+* ## Créer une interface
+
+Il faut créer un **nouveau fichier** dédié (comme pour une classe). Le nom du fichier et de l'interface est le même et généralement il est formé d'un verbe avec le suffixe -able et terminant par interface. Ce n'est pas obligatoire, ce n'est qu'une convention.
+
+``` php
+<?php
+interface RechargeableInterface
+{
+    public function charge(int $percentage): int;
+
+    public function unLoad(int $percentage): int;
+}
+```
+Cette interface va pouvoir gérer la recharge de n'importe quel appareil comme une voiture, un téléphone ou tout autre appareil avec une batterie et il n'aurait pas été logique qu'ils héritent de la même classe.
+
+L'**interface** va donc **obliger** la classe qui l’implémente à suivre un certain nombre de spécifications attendues (définition de méthode, avec des signatures bien précises) afin d’être sûr que le comportement correspondant à cette interface va être similaire entre deux objets. Cela n’empêche pas ces deux objets d'avoir des implémentations différentes des méthodes, ainsi que d’autres méthodes propres (en dehors de celles imposées par l’interface).
+
+Une autre différence entre **l’abstraction** (et l’héritage plus généralement) et les interfaces, est qu’**une classe peut implémenter plusieurs interfaces** (alors qu’elle ne peut étendre qu’une seule classe mère). Cela permet de découper en petits morceaux logiques les comportements, plutôt que d’avoir de très grosses classes mères contenant des méthodes qui ne sont pas spécifiques à tous ses enfants. Ce concept est appelé “ségrégation des interfaces” et fait partie des 5 grands principes de SOLID, un ensemble de bonnes pratiques à suivre en POO, dont tu entendras souvent parler.
+
+* ## Utiliser une inteface
+
+``` php
+<?php
+class ElectricBike extends Vehicle implements RechargeableInterface
+{
+    public function charge(int $percentage): int
+    {
+        // you must implement this method
+    }
+
+    public function unLoad(int $percentage): int
+    {
+        // you must implement this method
+    }
+}
+```
+L’interface est un **“contrat”**. Si les méthodes `charge()` et `unLoad()` ne sont pas définies dans la classe implémentant l’interface RechargeableInterface, le code renverra une erreur !
+
+Si on prend l'exemple d'une station de recharge, on peut donc typer un appareil implémentant une interface particulière :
+
+``` php
+<?php
+class ChargingStation
+{
+    public function fullCharge(RechargeableInterface $vehicle) 
+    {
+        $vehicle->charge(100);
+    }
+}
+```
+La station possède une méthode `fullCharge()` permettant de charger intégralement la batterie d’un véhicule électrique (que ce soit un vélo, une voiture, etc.). Dans cet exemple, l’implémentation est très simple et passe la batterie à 100%. Le **type** utilisé pour le paramètre `$vehicle` **n’est pas** la classe `Vehicle` directement, mais l’interface `RechargeableInterface`. Tu t’assures ainsi de **n’accepter** en paramètre que des objets **implémentant cette interface**, un objet `ElectricBike` par exemple, mais pas l’objet `Bike`. Et c’est ici absolument indispensable car, le contrat de l’interface étant forcément rempli, on est sûr que le véhicule utilisé dans la méthode `fullCharge` possédera bien une méthode s’appelant `charge()` et prenant un entier en paramètre. La façon dont l’objet implémente cette méthode `charge()` n’est pas important pour la classe ChargingStation.
+
+##### [Return to Top](#notes-poo)
+# **Le mot clé static**
+* ## Subtitle
+
+Une méthode `static` est un **service** proposé par la classe. Une **classe** peut être **instanciée**, et devenir un **objet**, mais elle peut aussi rendre des **services** sans avoir besoin d'être instanciée. C'est ça une méthode `static`. Pour préciser dans une classe qu'une méthode est statique, il faut lui ajouter le mot clé `static`.
+
+``` php
+<?php
+class MySuperClass {
+    public static function myStaticMethod()
+    {
+        // (...)
+    }
+}
+```
+Pour accéder à une méthode statique, il faut s’y prendre de la même façon que pour accéder à une constante de classe. Exemple `PDO::FETCH_ASSOC`. Ceci permet d’accéder directement à la constante nommée FETCH_ASSOC, sans même avoir besoin d’instancier un objet PDO.
+Pour les méthodes statiques, c’est pareil. `MySuperClass::myStaticMethod($parameter)`;
+
+Alors que pour une méthode qui ne serait pas statique, tu aurais du faire :
+
+``` php
+<?php
+$mySuperClass = new MySuperClass()
+$mySuperClass->myMethod($parameter);
+```
+
+**Explications :**  
+En POO, on n'accède pas aux membres d'une classe de la même manière selon si l'on doit faire référence à la classe ou à l'objet.
+- `$this` et -> font référence à l'**objet**
+- `self::` et :: font référence à la **classe**
+
+Une méthode **statique** ne pourra accéder qu’aux méthodes **statiques** de la classe
+car les autres sont liées à l’instance (qui n’existe pas lorsque l’on exécute une méthode statique).
+Il ne faut pas confondre **visibilité** et **staticité** ! Une méthode statique peut être `public`, `private` ou même `protected`.
+
+**Cas concret :**
+
+La classe `Recipe` contient une méthode `static` `retrieveTemperature()`. Cette méthode permet de réaliser une conversion thermostat de four / température : pour passer d'un "thermostat" à la température, il suffit de multiplier ce dernier par 30, par exemple thermostat 6 correspond à 6*30 = 180°.
+
+``` php
+<?php
+Class Recipe
+{
+    public const THERMOSTAT_CONVERSION = 30;
+    private $ingredients;
+    private $duration;
+    private $tools;
+    // (...) etc.
+
+    // (...) getters / setters, méthodes métiers, etc
+
+    public static function retrieveTemperature(int $thermostat): ?int
+    {   
+        return $thermostat * self::THERMOSTAT_CONVERSION;
+    }
+}
+```
+Pourquoi avoir mis cette méthode `static` ?
+Parce que nous n'avons pas besoin d'**intancier** une recette en particulier pour faire cette conversion ? Quel que soit l'objet `Recipe`, même avec des propriétés différentes, `retrieveTemperature()` retournera toujours la même chose. Le comportement de la méthode est indépendant de l'objet.
+Nous pourrons donc réaliser cette conversion tout simplement de la façon suivante :
+``` php
+<?php
+Recipe::retrieveTemperature('7');
+```
+Sans même avoir eu besoin de faire un `new`. Et tant mieux, car quelle que soit la recette, le fonctionnement d’un thermostat sera toujours le même.
 
 ##### [Return to Top](#notes-poo)
 # **Main Title**

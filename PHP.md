@@ -732,6 +732,9 @@ public function register()
 
 Si l'insertion en BDD s'est correctement déroulée, alors on connecte l'utilisateur grâce à la méthode `$this->login()`.
 
+DarkMode :
+https://github.com/WildCodeSchool/2022-09-php-remote-p2-guide-line/commit/8614bd9c3dc175ceac7dad20ff68ddd4a01286d2
+
 
 ##### [Return to Top](#notes-php)
 # **Les Dates**
