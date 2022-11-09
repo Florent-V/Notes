@@ -14,7 +14,8 @@
 10. [Abstraction](#abstraction)
 11. [Exceptions](#exceptions)
 12. [Interfaces](#implémentations-dinterfaces)
-13. [Static]()
+13. [Static](#le-mot-clé-static)
+13. [SOLID](#principes-solid)
 
 
 ##### [Return to Top](#notes-poo)
@@ -1082,6 +1083,15 @@ Remarque : en tant que développeur, il est tout à fait possible (et même asse
 https://www.php.net/manual/fr/class.exception.php  
 https://www.php.net/manual/fr/language.exceptions.extending.php
 
+[Créer ses propres classes d'exception](https://www.php.net/manual/fr/language.exceptions.extending.php)
+
+[Propager une Exception](https://www.php.net/manual/fr/language.exceptions.php)
+
+[Le gestionnaire global](https://www.php.net/manual/fr/function.set-exception-handler.php)
+
+[Exception, Error et Throwable](https://www.php.net/manual/fr/language.errors.php7.php)
+
+
 
 ##### [Return to Top](#notes-poo)
 # **Implémentations d'interfaces**
@@ -1212,6 +1222,20 @@ Nous pourrons donc réaliser cette conversion tout simplement de la façon suiva
 Recipe::retrieveTemperature('7');
 ```
 Sans même avoir eu besoin de faire un `new`. Et tant mieux, car quelle que soit la recette, le fonctionnement d’un thermostat sera toujours le même.
+
+##### [Return to Top](#notes-poo)
+# **Principes SOLID**
+1. **Responsabilité unique** (Single responsibility principle) :
+Une classe (méthode, fonction…) doit avoir une seule responsabilité
+2. **Ouvert/Fermé** (Open/closed principle) :
+Ouverte à l'extension  / fermé à la modification => ne pas ajouter indéfiniment des méthodes à une classe pour la spécialisée, mais utiliser l'héritage
+3. **Principe de substitution de Liskov** (Liskov substitution principle) :
+L'instance d'une classe mère doit pouvoir être remplacée par l'instance d'une classe fille sans altérer la cohérence globale.
+4. **Ségrégation des interfaces** (Interface segregation principle) :
+Une interface = un comportement => privilégier la multiplication des interfaces, une classe ne doit jamais être forcée d'implémenter une méthode dont elle n'a pas besoin
+5. **Inversion de dépendance** (Dependency inversion principle) :
+Il faut dépendre des abstractions et non des implémentations
+
 
 ##### [Return to Top](#notes-poo)
 # **Main Title**
