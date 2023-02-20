@@ -2,17 +2,21 @@
 
 ## Tables of contents
 
-1. [Mysqli vs PDO](#mysqli-vs-pdo)
-2. [Connexion à une base de données via PDO](#connexion-à-une-base-de-données-via-pdo)
-3. [Effectuer une requête simple](#effectuer-une-requête-simple)
-4. [Injections SQL](#injections-sql)
-5. [Requêtes préparées](#requêtes-préparées)
-6. [Récupération des données](#récupération-des-données)
-7. [Récapitulatif](#récapitulatif)
+
+- [Notes PDO](#notes-pdo)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Mysqli vs PDO**](#1-mysqli-vs-pdo)
+- [2. **Connexion à une base de données via PDO**](#2-connexion-à-une-base-de-données-via-pdo)
+- [3. **Effectuer une requête simple**](#3-effectuer-une-requête-simple)
+- [4. **Injections SQL**](#4-injections-sql)
+- [5. **Requêtes préparées**](#5-requêtes-préparées)
+- [6. **Récupération des données**](#6-récupération-des-données)
+- [7. **Récapitulatif**](#7-récapitulatif)
 
 
-##### [Return to Top](#notes-pdo)
-# **Mysqli vs PDO**
+
+[Return to Top](#notes-pdo)
+# 1. **Mysqli vs PDO**
 
 Il existe deux bibliothèques principales en PHP pour se connecter à une base de données.
 
@@ -21,8 +25,8 @@ Il existe deux bibliothèques principales en PHP pour se connecter à une base d
 - PDO pour PHP Data Objects, qui est une bibliothèque avec une approche uniquement orientée objet et qui apporte une couche d'abstraction supplémentaire, car elle permet de se connecter à tous types de SGBD, avec une syntaxe similaire. Cette fois-ci, changer de SGBD en cours de projet peut se faire relativement sans effort.
 Cette quête ne développera que PDO.
 
-##### [Return to Top](#notes-pdo)
-# **Connexion à une base de données via PDO**
+[Return to Top](#notes-pdo)
+# 2. **Connexion à une base de données via PDO**
 
 * ## Syntaxe
 Pour se connecter à une base de données, tu as besoin de quatre informations :
@@ -86,8 +90,8 @@ Enfin, pour que les informations confidentielles contenues dans `connec.php` ne 
 
 Les constantes DSN, USER et PASS ne sont pas figées, tu peux utiliser d’autres noms pour ces constantes. Il faut juste qu’elles soient appelées de la même manière lors de l’instanciation de ton objet PDO.
 
-##### [Return to Top](#notes-pdo)
-# **Effectuer une requête simple**
+[Return to Top](#notes-pdo)
+# 3. **Effectuer une requête simple**
 
 Exemple : on charge un fichier sql qui va créer une base de données appelée `pdo_quest` qui possède une unique table `friend`, contenant les champs `id`, `firstname` et `lastname`, ainsi que quelques valeurs.
 
@@ -118,8 +122,8 @@ $friends = $statement->fetchAll();
 ```
 La méthode `query()` de l'objet PDO (préalablement instancié et stocké dans la variable $pdo) permet d'exécuter une requête qui renvoie des résultats. La méthode retourne un objet de type `PDOStatement` (c'est pour cela que la variable a été nommée `$statement`). Ce nouvel objet possède lui-même plusieurs méthodes (dont `fetchAll()` utilisée ici) permettant de récupérer les données sous différents formats.
 
-##### [Return to Top](#notes-pdo)
-# **Injections SQL**
+[Return to Top](#notes-pdo)
+# 4. **Injections SQL**
 
 On vient de voir le cas d'une requête SELECT qui renvoie effectivement un résultat. 
 
@@ -155,8 +159,8 @@ $query = "INSERT INTO friend (firstname, lastname) VALUES ('Rachel', '');TRUNCAT
 Du code SQL potentiellement destructeur vient d'être injecté et, dans ce cas, vient de supprimer toutes les données de la table (mais cela aurait pu tout aussi bien récupérer une liste de mots de passe, supprimer toute la base de données, ou effectuer toute autre requête à ton insu !). Tu comprends donc l'importance absolue de se prémunir des injections sur absolument toutes tes requêtes SQL pouvant contenir des informations provenant d'un utilisateur.
 
 
-##### [Return to Top](#notes-pdo)
-# **Requêtes préparées**
+[Return to Top](#notes-pdo)
+# 5. **Requêtes préparées**
 
 Pour se protéger contre ces injections, la solution est d'échapper tous les caractères qui pourraient venir modifier une requête SQL : quote, parenthèse, point-virgule etc... Il y a par exemple la fonction `mysql_real_escape_string()`, qui vont ajouter par exemple un antislash devant les caractères potentiellement dangereux, les rendant ainsi *“inoffensifs”*. C'est assez fastidieux car il ne faut rien oublier.
 
@@ -197,8 +201,8 @@ Il faut donc tout le temps utiliser de requêtes préparées ! Sauf si on doit e
 
 Tes requêtes préparées sont protégées des injections SQL. Cependant, il faudra également penser systématiquement à vérifier que le format des données (type, longueur, etc.) correspond bien au format défini dans ta base de données, au risque d'avoir des erreurs ou des données corrompues. Les requêtes préparées ne s’occupent pas de cette validation des données qui est également indispensable !
 
-##### [Return to Top](#notes-pdo)
-# **Récupération des données**
+[Return to Top](#notes-pdo)
+# 6. **Récupération des données**
 
 Il existe deux méthodes principales que sont `fetch()` et `fetchAll()` qui s'utilisent toutes deux sur des objets de type *PDOStatement*.
 1. `fetch()` permet de récupérer un seul résultat. Utile si notre requête ne doit renvoyer qu'une seule et unique ligne. Dans le cas contraire, si on utilise `fetch()` on n'obtiendra uniquement que les résultats du premier enregistrement.
@@ -276,8 +280,8 @@ foreach($friendsObject as $friend) {
     echo $friend->firstname . ' ' . $friend->lastname;
 }
 ```
-##### [Return to Top](#notes-pdo)
-# **Récapitulatif**
+[Return to Top](#notes-pdo)
+# 7. **Récapitulatif**
 
 ![Récapitulatif](./img/02.png)
 
@@ -318,7 +322,8 @@ $query = "DELETE FROM friend WHERE firstname LIKE 'P%'LIMIT 1";
 $statement = $pdo->exec($query);
 ```
 
-
+Exemple CRUD :
+https://github.com/WildCodeSchool/2022-09-php-remote-p2-guide-line/tree/9d21192a5ef631e277619c02ace48503dd054ce7
 ``` php
 <?php
 

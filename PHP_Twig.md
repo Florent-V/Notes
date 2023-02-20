@@ -3,18 +3,24 @@
 ## Tables of contents
 
 
-1. [Introdcution](#introduction)
-2. [Installer & Utiliser Twig](#installer--utiliser-twig)
-3. [Syntaxe](#syntaxe)
 
+- [Notes Twig](#notes-twig)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Introduction**](#1-introduction)
+  - [1.1. Avantage](#11-avantage)
+  - [1.2. Inconvénient](#12-inconvénient)
+- [2. **Installer \& Utiliser Twig**](#2-installer--utiliser-twig)
+- [3. **Syntaxe**](#3-syntaxe)
+- [4. **Application**](#4-application)
+- [5. **Main Title**](#5-main-title)
 
-##### [Return to Top](#notes-twig)
-# **Introduction**
+[Return to Top](#notes-twig)
+# 1. **Introduction**
 
 C'est un moteur de template,utilisé par défaut dans symfony. Il offre une meilleure lisibilité et apportent des fonctinnalités facilitant l'écriture des vues via une syntaxe plus claire et plus concise. A l'exécution du script, le fichier *template* est transformé en PHP "natif".
 
 
-## Avantage
+## 1.1. Avantage
 
 * Plus besoind 'écrire du PHP directement dans la vue : meilleure séparation.
 * Idéal pour le travail d'équipe un intégrateur peut faire du twig sans connaître php
@@ -31,7 +37,7 @@ Devient
 * Sécurisation automatique des variables. Finis les htmlentities() etc...
 * Possibilité de stocker du rendu dans une variable (par exemple lors de l'envoie d'un mail.)
 
-## Inconvénient
+## 1.2. Inconvénient
 
 * 1er chargement des pages assez long pour la première fois.
 Twig possède un système de mise en cache qui permet de récupérer une vitesse de chargement normale.
@@ -39,8 +45,8 @@ Twig possède un système de mise en cache qui permet de récupérer une vitesse
 * Apprentissage d'une nouvelle syntaxe.
 
 
-##### [Return to Top](#notes-twig)
-# **Installer & Utiliser Twig**
+[Return to Top](#notes-twig)
+# 2. **Installer & Utiliser Twig**
 * ## Installer
 
 Pour l'installer sur un projet :
@@ -93,8 +99,8 @@ Hello {{firstname}} {{lastname}}
 ```
 
 
-##### [Return to Top](#notes-twig)
-# **Syntaxe**
+[Return to Top](#notes-twig)
+# 3. **Syntaxe**
 * ## Syntaxe générale
 
 ``` twig
@@ -269,8 +275,8 @@ file.csv.twig
 file.txt.twig  
 file.json.twig …   
 
-##### [Return to Top](#notes-twig)
-# **Application**
+[Return to Top](#notes-twig)
+# 4. **Application**
 
 * ## Démarrage
 On a plutôt tendance à mettre ce code dans un fichier twig.php dans un dossier config
@@ -467,8 +473,8 @@ $twig->addGlobal('author', $author);
 >En effet, toutes les informations que tu mettras en global seront transmises à >toutes les vues de ton site (y compris à celles qui ne les utilisent pas !). >Quel que soit le contexte, en programmation c'est une bonne pratique d'être >parcimonieux avec l'utilisation de variables globales.
 >Aussi n'utilise les globales que pour les données transverses à ton site, pour >le reste il vaut mieux utiliser $twig->render().
 
-##### [Return to Top](#notes-twig)
-# **Main Title**
+[Return to Top](#notes-twig)
+# 5. **Main Title**
 * ## Subtitle
 
 ``` php

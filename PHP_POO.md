@@ -2,24 +2,39 @@
 
 ## Tables of contents
 
-1. [Les classes et les objets](#les-classes-et-les-objets)
-2. [Les propriétés](#les-propriétés)
-3. [Les méthodes](#les-méthodes)
-4. [Constructeurs et visibilité](#constructeur-et-visibilité)
-5. [Les constantes de classe](#les-constantes-de-classe)
-6. [Héritage et parentalité](#héritage-et-parentalité)
-7. [AutoLoading](#autoloading)
-8. [Polymorphisme](#le-polymorphisme)
-9. [Propriétés et méthodes de classe](#propric3a9tc3a9s-et-mc3a9thodes-de-classe-1)
-10. [Abstraction](#abstraction)
-11. [Exceptions](#exceptions)
-12. [Interfaces](#implémentations-dinterfaces)
-13. [Static](#le-mot-clé-static)
-13. [SOLID](#principes-solid)
+- [Notes POO](#notes-poo)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Les classes et les objets**](#1-les-classes-et-les-objets)
+- [2. **Les propriétés**](#2-les-propriétés)
+- [3. **Les méthodes**](#3-les-méthodes)
+- [4. **Constructeur et visibilité**](#4-constructeur-et-visibilité)
+- [5. **Les constantes de classe**](#5-les-constantes-de-classe)
+- [6. **Héritage et parentalité**](#6-héritage-et-parentalité)
+- [7. **AutoLoading**](#7-autoloading)
+- [8. **Le Polymorphisme**](#8-le-polymorphisme)
+- [9. **Propriétés et méthodes de classe**](#9-propriétés-et-méthodes-de-classe)
+  - [9.1. Rappels](#91-rappels)
+  - [9.2. Propriétés et méthodes de classe](#92-propriétés-et-méthodes-de-classe)
+- [10. **Abstraction**](#10-abstraction)
+- [11. **Exceptions**](#11-exceptions)
+- [12. **Implémentations d'interfaces**](#12-implémentations-dinterfaces)
+- [13. **Le mot clé static**](#13-le-mot-clé-static)
+- [14. **Principes SOLID**](#14-principes-solid)
+- [15. **Main Title**](#15-main-title)
 
 
-##### [Return to Top](#notes-poo)
-# **Les classes et les objets**
+La POO permet :
+- Une meilleure robustesse du code en rajoutant du typage par objet/class. Peut limiter voir restreindre certains comportement.
+- De faire plus facilement des test de partie du code (TDD). 
+- D'isoler des parties de code.
+- Créer des interactions entre méthodes et classe.
+- une plus grande clarté du code.
+- une meilleure maintenabilité.
+- un meilleur travail d'équipe
+- une représentation UML
+
+[Return to Top](#notes-poo)
+# 1. **Les classes et les objets**
 
 
 * ## Les classes
@@ -72,8 +87,8 @@ object(Animal)[2]
   public int 'pawNumber' => *uninitialized*
   public int 'isCarnivorous' => *uninitialized*
 ```
-##### [Return to Top](#notes-poo)
-# **Les propriétés**
+[Return to Top](#notes-poo)
+# 2. **Les propriétés**
 
 Reprenons la classe `Animal` :
 ``` php
@@ -117,8 +132,8 @@ Pour récupérer la valeur d'une propriété, on utilise la même syntaxe :
 ``` php
 echo 'Bonjour je suis un ' . $lion->name . ' et j\'ai ' . $lion->pawNumber . ' patte(s)';
 ```
-##### [Return to Top](#notes-poo)
-# **Les méthodes**
+[Return to Top](#notes-poo)
+# 3. **Les méthodes**
 
 * ## Définir une méthode
 
@@ -203,8 +218,8 @@ public function isDangerous(): bool
     return ($this->size > 50 && $this->carnivorous);
 }
 ```
-##### [Return to Top](#notes-poo)
-# **Constructeur et visibilité**
+[Return to Top](#notes-poo)
+# 4. **Constructeur et visibilité**
 
 * ## Constructeur
 Avec les syntaxes précédentes, toutes les propriétés ne sont pas définies à la création de l'objet et donc si on fait cela :
@@ -363,8 +378,8 @@ Pour les différents éléments on retrouve :
 * un - pour `private`
 * un # pour `protected`
 
-##### [Return to Top](#notes-poo)
-# **Les constantes de classe**
+[Return to Top](#notes-poo)
+# 5. **Les constantes de classe**
 
 Après les propriétés et les méthodes, un troisième élément peut y-être défini, les **constantes**.  
 À la différence d'une propriété (appelée aussi variable de classe) dont la valeur peut changer d'une instance à l'autre, une constante de classe est un élément dont **la valeur est immuable**, elle sera la même pour tous les objets d'une même classe.  
@@ -480,8 +495,8 @@ class Animal
     }
 }
 ```
-##### [Return to Top](#notes-poo)
-# **Héritage et parentalité**
+[Return to Top](#notes-poo)
+# 6. **Héritage et parentalité**
 
 * ## Héritage
 
@@ -753,8 +768,8 @@ class SpecialRowBoat extends RowBoat
 
 
 
-##### [Return to Top](#notes-poo)
-# **AutoLoading**
+[Return to Top](#notes-poo)
+# 7. **AutoLoading**
 
 Avec la fonction `spl_autoload_register()`. Cela est désormais bien simplifié avec `composer`.
 
@@ -782,8 +797,8 @@ On peut mettre ce bout de code dans un fichier `autoload.php` en racine du proje
 require './autoload.php'; 
 ```
 
-##### [Return to Top](#notes-poo)
-# **Le Polymorphisme**
+[Return to Top](#notes-poo)
+# 8. **Le Polymorphisme**
 
 Un objet fille peut faire tout ce que peut faire un objet mère.
 
@@ -830,9 +845,9 @@ $boat->load($barrel);
 echo count($boat->getContainers()); // 4
 ```
 
-##### [Return to Top](#notes-poo)
-# **Propriétés et méthodes de classe**
-## Rappels
+[Return to Top](#notes-poo)
+# 9. **Propriétés et méthodes de classe**
+## 9.1. Rappels
 
 - Propriétés :
     - Chaque objet dispose des mêmes propriétés mais avec des valeurs différentes
@@ -842,7 +857,7 @@ echo count($boat->getContainers()); // 4
     - Doivent être appelées sur un objet
     - S'appliquent aux propriétés de cet objet ($this)
 
-## Propriétés et méthodes de classe
+## 9.2. Propriétés et méthodes de classe
 
 - Propriétés de classe :
     - Existent au niveau de la **classe**
@@ -903,8 +918,8 @@ $anotherBoat = new Boat('Gaia', 8);
 echo Boat::count(); //3
 ```
 
-##### [Return to Top](#notes-poo)
-# **Abstraction**
+[Return to Top](#notes-poo)
+# 10. **Abstraction**
 
 L'héritage peut répondre à des problématiques simples. La POO apporte d'autres outils, plus subtils, pour répondre à des cas de figure avancées.
 
@@ -972,8 +987,8 @@ Il n’est pas obligatoire (comme avec `abstract`) de rendre toute la classe `fi
 ![Exemple](./img/06.png)
 
 
-##### [Return to Top](#notes-poo)
-# **Exceptions**
+[Return to Top](#notes-poo)
+# 11. **Exceptions**
 * ## Qu'est-ce qu'une exception ?
 
 Pour gérer les erreurs, on peut utiliser des "if" mais il y a une classe qui permet de gérer les erreurs : la classe `Exception`.
@@ -1093,8 +1108,8 @@ https://www.php.net/manual/fr/language.exceptions.extending.php
 
 
 
-##### [Return to Top](#notes-poo)
-# **Implémentations d'interfaces**
+[Return to Top](#notes-poo)
+# 12. **Implémentations d'interfaces**
 
 https://www.php.net/manual/fr/language.oop5.interfaces.php
 
@@ -1157,8 +1172,8 @@ class ChargingStation
 ```
 La station possède une méthode `fullCharge()` permettant de charger intégralement la batterie d’un véhicule électrique (que ce soit un vélo, une voiture, etc.). Dans cet exemple, l’implémentation est très simple et passe la batterie à 100%. Le **type** utilisé pour le paramètre `$vehicle` **n’est pas** la classe `Vehicle` directement, mais l’interface `RechargeableInterface`. Tu t’assures ainsi de **n’accepter** en paramètre que des objets **implémentant cette interface**, un objet `ElectricBike` par exemple, mais pas l’objet `Bike`. Et c’est ici absolument indispensable car, le contrat de l’interface étant forcément rempli, on est sûr que le véhicule utilisé dans la méthode `fullCharge` possédera bien une méthode s’appelant `charge()` et prenant un entier en paramètre. La façon dont l’objet implémente cette méthode `charge()` n’est pas important pour la classe ChargingStation.
 
-##### [Return to Top](#notes-poo)
-# **Le mot clé static**
+[Return to Top](#notes-poo)
+# 13. **Le mot clé static**
 * ## Subtitle
 
 Une méthode `static` est un **service** proposé par la classe. Une **classe** peut être **instanciée**, et devenir un **objet**, mais elle peut aussi rendre des **services** sans avoir besoin d'être instanciée. C'est ça une méthode `static`. Pour préciser dans une classe qu'une méthode est statique, il faut lui ajouter le mot clé `static`.
@@ -1223,8 +1238,8 @@ Recipe::retrieveTemperature('7');
 ```
 Sans même avoir eu besoin de faire un `new`. Et tant mieux, car quelle que soit la recette, le fonctionnement d’un thermostat sera toujours le même.
 
-##### [Return to Top](#notes-poo)
-# **Principes SOLID**
+[Return to Top](#notes-poo)
+# 14. **Principes SOLID**
 1. **Responsabilité unique** (Single responsibility principle) :
 Une classe (méthode, fonction…) doit avoir une seule responsabilité
 2. **Ouvert/Fermé** (Open/closed principle) :
@@ -1237,8 +1252,8 @@ Une interface = un comportement => privilégier la multiplication des interfaces
 Il faut dépendre des abstractions et non des implémentations
 
 
-##### [Return to Top](#notes-poo)
-# **Main Title**
+[Return to Top](#notes-poo)
+# 15. **Main Title**
 * ## Subtitle
 
 ``` php

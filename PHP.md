@@ -2,15 +2,20 @@
 
 ## Tables of contents
 
-1. [Fonction intéressantes en PHP](#fonction-intéressante-en-php)
-2. [L'opérateur ternaire](#lopérateur-ternaire)
-3. [L'upload de fichier](#lupload-de-fichier)
-4. [Les cookies](#les-cookies)
-5. [Les Sessions](#les-sessions)
-6. [créer des comptes utilisateurs](#créer-des-comptes-utilisateur)
 
-##### [Return to Top](#notes-php)
-# **Fonction intéressante en PHP**
+- [Notes PHP](#notes-php)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Fonction intéressante en PHP**](#1-fonction-intéressante-en-php)
+- [2. **L'opérateur ternaire**](#2-lopérateur-ternaire)
+- [3. **L'upload de fichier**](#3-lupload-de-fichier)
+- [4. **Les Cookies**](#4-les-cookies)
+- [5. **Les Sessions**](#5-les-sessions)
+- [6. **Créer des comptes utilisateur**](#6-créer-des-comptes-utilisateur)
+- [7. **Les Dates**](#7-les-dates)
+- [8. **L'opérateur ternaire**](#8-lopérateur-ternaire)
+
+[Return to Top](#notes-php)
+# 1. **Fonction intéressante en PHP**
 
 * ## array_map()
 Appliquer une fonction à tous les membres d'un tableau : utilisation de la fonction `array_map()`. Utilise pour appliquer le même filtre à toutes les valeurs de la varibale $_POST d'un formulaire.
@@ -38,9 +43,52 @@ $obj instanceof MyClass
     * `empty()` : Détermine si une variable est vide. Elle retourne `true` si la variable est une **string vide**, **false**, tableau vide (**array()**), **NULL**, **0** (string ou integer) et une varibale non définie (**unset**).
     * `is_null()` : La fonction retourne `true` seulement si la varibale vaut **null**. `is_null()` est l'opposé de `isset()` sauf que `isset()` peut être appliquée à des **varibales inconnue** alors que `is_null()` ne peut être appliquée qu'à des **variables déclarée**.
 
+* ## unset
 
-##### [Return to Top](#notes-php)
-# **L'opérateur ternaire**
+Unset permet de supprimer une variable, ou une valeur dans un `array`
+
+```php
+<?php   
+  $nbrs = array(1, 2, 3, 4, 5);
+  unset($nbrs[1]);
+  print_r($nbrs);
+?>
+```
+
+* ## array_pad
+
+
+```php
+$input = array(12, 10, 9);
+
+$result = array_pad($input, 5, 0);
+// Le résultat est : array(12, 10, 9, 0, 0)
+```
+`array_pad()` retourne une copie du tableau **array** complétée jusqu'à la taille de **length** avec la valeur **value**. Si **length** est positif, alors le tableau est complété à droite, s'il est négatif, il est complété à gauche. Si la valeur absolue de **length** est plus petite que la taille du tableau **array**, alors le tableau n'est pas complété. Il est possible d'ajouter au maximum 1048576 éléments d'un seul coup.
+
+* ## array_filter
+
+Filtre les éléments d'un tableau grâce à une fonction de rappel
+
+```php
+$input = array(12, 10, 9);
+
+$result = array_pad($input, 5, 0);
+// Le résultat est : array(12, 10, 9, 0, 0)
+```
+Évalue chaque valeur du tableau **array** en les passant à la fonction de rappel **callback**. Si la fonction de rappel **callback** retourne **true**, la valeur courante du tableau **array** est retournée dans le tableau résultant.
+
+Les clés du tableau sont préservées, et peut entrainer des anomalies si le tableau **array** était indexé. Le tableau résultant peut être ré-indexé en utilisant la fonction array_values().
+
+
+
+
+
+
+
+
+[Return to Top](#notes-php)
+# 2. **L'opérateur ternaire**
 
 Exemple savoir si un nombre est pair :
 ``` php
@@ -131,8 +179,8 @@ var_export (''    ?: 'value2');   // value2
 var_export (0     ?: 'value2');   // value2
 ```
 
-##### [Return to Top](#notes-php)
-# **L'upload de fichier**
+[Return to Top](#notes-php)
+# 3. **L'upload de fichier**
 
 * ## Le formulaire
 
@@ -153,9 +201,10 @@ On commence par ajouter un champ de type `file` dans un formulaire :
 
 Lors de l'envoie d'un formulaire avec un fichier on utilise une autre superglobale : `$_FILES` qui permet la gestion des fichiers.
 
-Cette variable est un tableau de tableaux, qui prend en première clé le nom du/des champ(s) de type `file` du formulaire, et en seconde dimension un tableau de 5 éléments. Exemple pour un champ de type file portant le nom `driverPicture` :
+Cette variable est un tableau de tableaux, qui prend en première clé le nom du/des champ(s) de type `file` du formulaire, et en seconde dimension un tableau de 6 éléments. Exemple pour un champ de type file portant le nom `driverPicture` :
 
 - $_FILES['driverPicture']['name'] : Contient le nom d'origine du fichier (sur le poste du client)
+- $_FILES['driverPicture']['full_path'] : Contient le chemin d'origine du fichier (sur le poste du client)
 - $_FILES['driverPicture']['tmp_name'] : Contient le nom temporaire du fichier dans le dossier temporaire du système (sur le serveur)
 - $_FILES['driverPicture']['type'] : Contient le type MIME du fichier (plus fiable que l'extension)
 - $_FILES['driverPicture']['size'] : Contient la taille du fichier en octets
@@ -247,8 +296,8 @@ Il ne faut cependant pas oublier de récupérer l'extension du fichier d'origine
 
 
 
-##### [Return to Top](#notes-php)
-# **Les Cookies**
+[Return to Top](#notes-php)
+# 4. **Les Cookies**
 
 PHP accède aux données des requêtes et les enregistre dans des tableaux particuliers (les superglobales) afin de faciliter leur lecture.
 
@@ -368,8 +417,8 @@ https://github.com/WildCodeSchool/2022-09-php-remote-p2-guide-line/commit/8614bd
 
 
 
-##### [Return to Top](#notes-php)
-# **Les Sessions**
+[Return to Top](#notes-php)
+# 5. **Les Sessions**
 
 Une session :
 - des informations stockées sur le serveur
@@ -519,8 +568,8 @@ Les **sessions** stockent des informations sur le **serveur**
 - Récupérable côté serveur via `$_SESSION`
 
 
-##### [Return to Top](#notes-php)
-# **Créer des comptes utilisateur**
+[Return to Top](#notes-php)
+# 6. **Créer des comptes utilisateur**
 
 * ## User Manager
 
@@ -728,16 +777,26 @@ public function register()
     }
     return $this->twig->render('User/register.html.twig');
 }
-```
+```  
+**password_hash**  
+https://www.php.net/manual/fr/function.password-hash.php
+
+**password_verify**  
+https://www.php.net/manual/fr/function.password-verify.php
+
+
+
 
 Si l'insertion en BDD s'est correctement déroulée, alors on connecte l'utilisateur grâce à la méthode `$this->login()`.
 
-DarkMode :
-https://github.com/WildCodeSchool/2022-09-php-remote-p2-guide-line/commit/8614bd9c3dc175ceac7dad20ff68ddd4a01286d2
+**DarkMode :**   
+https://github.com/WildCodeSchool/2022-09-php-remote-p2-guide-line/tree/8614bd9c3dc175ceac7dad20ff68ddd4a01286d2
 
+**User :**  
+https://github.com/WildCodeSchool/2022-09-php-remote-correction-atelier-simple-mvc-user
 
-##### [Return to Top](#notes-php)
-# **Les Dates**
+[Return to Top](#notes-php)
+# 7. **Les Dates**
 
 Avant les dates étaient générées à partir du [timestamp](#https://fr.wikipedia.org/wiki/Heure_Unix)
 , c'est à dire le nombre de seconde depuis le 1er janvier 1970. Cela fonctionne encore très bien mais a une limite théorique à la date du 19 janvier 2038 (sur les systèmes codés en 32bits) ainsi que des lacunes dans la gestion des fuseaux horaires, d'heures d'été et d'hiver etc...
@@ -774,8 +833,10 @@ https://www.phpfacile.com/apprendre_le_php/dates_avec_classe_datetime
 
 ```
 
-##### [Return to Top](#notes-php)
-# **L'opérateur ternaire**
+[Return to Top](#notes-php)
+# 8. **L'opérateur ternaire**
+
+* ## Subtitle
 
 
 

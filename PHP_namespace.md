@@ -1,17 +1,19 @@
 # Notes Name space
 
 ## Tables of contents
-
-1. [Le Problème](#le-problème)
-2. [Les Namespace](#les-namespace)
-3. [Espace de nom global](#espace-de-nom-global)
+- [Notes Name space](#notes-name-space)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Le problème**](#1-le-problème)
+- [2. **Les namespace**](#2-les-namespace)
+  - [2.1. Récupérer le FQCN](#21-récupérer-le-fqcn)
+- [3. **Espace de nom global**](#3-espace-de-nom-global)
 
 
 En programmation orientée objet, il arrive que différentes classes, fonctions ou constantes portent le même nom (d'une bibliothèque à une autre par exemple). Afin d'éviter tout conflit, PHP met à disposition des espaces de noms: les namespaces.
 
 
-##### [Return to Top](#notes-name-space)
-# **Le problème** 
+[Return to Top](#notes-name-space)
+# 1. **Le problème** 
 
 L'intérêt des namespaces est de permettre à une application de pouvoir utiliser des classes aux noms identiques dans un même projet.
 
@@ -40,9 +42,8 @@ On obtiendrait donc une erreur :
 
     PHP Fatal error: Cannot declare class Event, because the name is already in use
 
-
-##### [Return to Top](#notes-name-space)
-# **Les namespace**
+[Return to Top](#notes-name-space)
+# 2. **Les namespace**
 
 
 Les espaces de noms vont pouvoir régler ce problème. On va donc ajouter des namespaces dans nos deux classes :
@@ -106,7 +107,7 @@ $technicalEvent = new TechnicalEvent();
 
 Ceci te permettra d'aborder sereinement le principe d'autoload (chargement automatique des classes) !
 
-## Récupérer le FQCN
+## 2.1. Récupérer le FQCN
 
 On utilise l'opérateur ::class qui renvoie le nom complet d'une classe sous forme d'une chaîne de caractères :
 ``` php
@@ -118,8 +119,8 @@ echo Column::class;
 
 
 
-##### [Return to Top](#notes-name-space)
-# **Espace de nom global**
+[Return to Top](#notes-name-space)
+# 3. **Espace de nom global**
 
 Le namespace gloabl est `\`.
 
@@ -143,4 +144,4 @@ $dataAccess = new DataAcess(DSN, LOGIN, PASSWORD);
 ```
 
 
-##### [Return to Top](#notes-name-space)
+[Return to Top](#notes-name-space)

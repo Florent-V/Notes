@@ -2,18 +2,25 @@
 
 ## Tables of contents
 
-1. [Installation de MySQL](#installation-de-mysql)
-2. [Création d'une base de données](#création-dune-base-de-donnée)
-3. [Récupérer les informations d'une BDD](#récupérer-les-informations)
-4. [Manipuler/Modifier les données](#manipulermodifier-les-données)
-5. [Bilan](#bilan)
-6. [Les bases de la modélisation](#les-bases-de-la-modélisation)
-7. [les jointures](#les-jointures)
-8. [SQL avancé](#sql-avancé)
+- [Notes SQL](#notes-sql)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Installation de MySQL**](#1-installation-de-mysql)
+- [2. **Création d'une base de donnée**](#2-création-dune-base-de-donnée)
+- [3. **Récupérer les informations**](#3-récupérer-les-informations)
+- [4. **Manipuler/Modifier les données**](#4-manipulermodifier-les-données)
+- [5. **Bilan**](#5-bilan)
+  - [5.1. Création base, table et insertion de valeur :](#51-création-base-table-et-insertion-de-valeur-)
+- [6. **Les bases de la modélisation**](#6-les-bases-de-la-modélisation)
+- [7. **Les Jointures**](#7-les-jointures)
+  - [7.1. Utilisation des Alias](#71-utilisation-des-alias)
+- [8. **SQL Avancé**](#8-sql-avancé)
+- [9. **Main Title**](#9-main-title)
+    - [9.0.1. qfsdf](#901-qfsdf)
+      - [9.0.1.1. qfsfsfsfd](#9011-qfsfsfsfd)
 
 
-##### [Return to Top](#notes-sql)
-# **Installation de MySQL**
+[Return to Top](#notes-sql)
+# 1. **Installation de MySQL**
 
 D'abord on installe :
 ``` sh
@@ -44,8 +51,8 @@ Pour se connecter à une base de donnée précise :
 ``` sh
 $mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -D wizard -p
 ```
-##### [Return to Top](#notes-sql)
-# **Création d'une base de donnée**
+[Return to Top](#notes-sql)
+# 2. **Création d'une base de donnée**
 
 * Importer une BDD existante
 
@@ -138,8 +145,8 @@ On voit les différents champs de la table.
 ``` sql
 DESCRIBE wizard;
 ```
-##### [Return to Top](#notes-sql)
-# **Récupérer les informations**
+[Return to Top](#notes-sql)
+# 3. **Récupérer les informations**
 
 * La commande SELECT
 
@@ -251,9 +258,9 @@ ORDER BY ages;
 ```
 On aura donc la liste de tous les âges représentés par les membres de notre site, sans doublons, et par ordre croissant.
 
-##### [Return to Top](#notes-sql)
+[Return to Top](#notes-sql)
 
-# **Manipuler/Modifier les données**
+# 4. **Manipuler/Modifier les données**
 * ## Modifier une table : ALTER
 
 Pour modifier des éléments de la base de données :
@@ -401,9 +408,9 @@ mysqldump -u florent -p mydatabase > /home/myuser/database-dump.sql
 ```
 
 
-##### [Return to Top](#notes-sql)
-# **Bilan**
-## Création base, table et insertion de valeur :
+[Return to Top](#notes-sql)
+# 5. **Bilan**
+## 5.1. Création base, table et insertion de valeur :
 ``` sql
 CREATE DATABASE checkpoint1;
 USE checkpoint1;
@@ -423,8 +430,8 @@ VALUES ('Alexandre D', 250),
 ```
 
 
-##### [Return to Top](#notes-sql)
-# **Les bases de la modélisation**
+[Return to Top](#notes-sql)
+# 6. **Les bases de la modélisation**
 
 
 * ## MODELISATION CONCEPTUELLEE DE DONNEES (MCD)
@@ -591,8 +598,8 @@ Options après `ON DELETE`  et `ON UPDATE` :
 
 
 
-##### [Return to Top](#notes-sql)
-# **Les Jointures**
+[Return to Top](#notes-sql)
+# 7. **Les Jointures**
 
 Une fois que tes tables sont reliées avec les **foreign key**, cela va permettre de récupérer les informations de plusieurs tables en une seule requête SQL. Pour cela, on va utiliser les jointures :
 
@@ -612,7 +619,7 @@ SELECT firstname, lastname, name
 FROM wizard
 INNER JOIN school ON school.id=wizard.school_id;
 ```
-## Utilisation des Alias
+## 7.1. Utilisation des Alias
 
 ``` sql
 SELECT name AS school_name FROM school AS s;
@@ -772,8 +779,8 @@ S’il y a des doublons dans les résultats des deux requêtes, ils ne sont pas 
 
 ```
 
-##### [Return to Top](#notes-sql)
-# **SQL Avancé**
+[Return to Top](#notes-sql)
+# 8. **SQL Avancé**
 
 * ## WHERE Avancée
 
@@ -1027,8 +1034,8 @@ https://openclassrooms.com/fr/courses/6971126-implementez-vos-bases-de-donnees-r
 
 
 
-##### [Return to Top](#notes-sql)
-# **Main Title**
+[Return to Top](#notes-sql)
+# 9. **Main Title**
 * ## Subtitle
 
 ``` sql
@@ -1051,8 +1058,8 @@ https://openclassrooms.com/fr/courses/6971126-implementez-vos-bases-de-donnees-r
 Commande   ==ALTER== 
 
 
-### qfsdf
-#### qfsfsfsfd
-##### qfsfsfsfd
-###### qfsfsfsfd
+### 9.0.1. qfsdf
+#### 9.0.1.1. qfsfsfsfd
+qfsfsfsfd
+#qfsfsfsfd
 fsfsfs

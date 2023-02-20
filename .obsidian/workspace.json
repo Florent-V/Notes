@@ -1,0 +1,144 @@
+{
+  "main": {
+    "id": "4188ac83752c0f0d",
+    "type": "split",
+    "children": [
+      {
+        "id": "e1360e2996121bb5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fb9b85bb43a10403",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "symfony.md",
+                "mode": "source",
+                "source": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3e27f4378362218d",
+    "type": "split",
+    "children": [
+      {
+        "id": "0f44415dbb69fa43",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e6769e1d9ae7e872",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "4c828c9e7fd7a79e",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "359b38b049a647a2",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f410e7cd7fa5411d",
+    "type": "split",
+    "children": [
+      {
+        "id": "a136d80283b1ad63",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5e89c70ad02c9e3c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "symfony.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "cc9a96694d03186c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "symfony.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "866ae48216cf41d5",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "62ababe133dae0b0",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "symfony.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "fb9b85bb43a10403",
+  "lastOpenFiles": [
+    "symfony.md",
+    "Sans titre.md"
+  ]
+}

@@ -1,19 +1,24 @@
 # Notes composer
 
-
 ## Tables of contents
 
-1. [Introduction](#introduction)
-2. [Installation](#installation)
-3. [Initialisation d'un projet composer](#initialisation-dun-projet-composer)
-4. [Chargement des classes (Autoloading)](#chargement-des-classes-autoloading)
-5. [Ajouter et supprimer des dépendances](#ajouter-des-dépendances)
-6. [composer.json VS composer.lock](#composerjson-vs-composerlock)
-7. [Mise à jour](#mise-à-jour)
+
+- [Notes composer](#notes-composer)
+  - [Tables of contents](#tables-of-contents)
+- [1. **Introduction**](#1-introduction)
+- [2. **Installation**](#2-installation)
+- [3. **Initialisation d'un projet composer**](#3-initialisation-dun-projet-composer)
+- [4. **Chargement des classes (Autoloading)**](#4-chargement-des-classes-autoloading)
+- [5. **Ajouter des dépendances**](#5-ajouter-des-dépendances)
+- [6. **composer.json VS composer.lock**](#6-composerjson-vs-composerlock)
+  - [6.1. composer.json](#61-composerjson)
+  - [6.2. composer.lock](#62-composerlock)
+- [7. **Mise à jour**](#7-mise-à-jour)
 
 
-##### [Return to Top](#notes-composer)
-# **Introduction**
+
+[Return to Top](#notes-composer)
+# 1. **Introduction**
 
 Composer est un gestionnaire de dépendances pour PHP.  
 
@@ -55,8 +60,8 @@ Tu ne peux pas installer n'importe quelle librairie via Composer. Toutes les lib
 ...
 
 
-##### [Return to Top](#notes-composer)
-# **Installation**
+[Return to Top](#notes-composer)
+# 2. **Installation**
 
 * ## Installation locale
 
@@ -86,8 +91,8 @@ composer --version
 ![installation-01](./img/07.png)
 ![installation-02](./img/08.png)
 
-##### [Return to Top](#notes-composer)
-# **Initialisation d'un projet composer**
+[Return to Top](#notes-composer)
+# 3. **Initialisation d'un projet composer**
 Avant tout utilisation de composer,il faut vérifier si on utilise bien une version à jour. Pour mettre à jour automatiquement il faut lancer la commande suivante :
 
 On commence par faire un git init :
@@ -131,8 +136,8 @@ Ce fichier contient toutes les informations relatives au projet que l'on a rense
 
 Ne pas oublier de rajouter le dossier `vendor` dans le `.gitignore`.
 
-##### [Return to Top](#notes-composer)
-# **Chargement des classes (Autoloading)**
+[Return to Top](#notes-composer)
+# 4. **Chargement des classes (Autoloading)**
 
 Dans certains cas, il arrive que différentes classes, fonctions ou constantes portent le même nom (d'une bibliothèque à une autre par exemple). Afin d'éviter tout conflit PHP met à disposition des espaces de noms: les **namespaces**.
 
@@ -184,8 +189,8 @@ Si on modifie l'autoload dans le composer.json après l'installation, il faudra 
 composer dump-autoload
 ```
 
-##### [Return to Top](#notes-composer)
-# **Ajouter des dépendances**
+[Return to Top](#notes-composer)
+# 5. **Ajouter des dépendances**
 
 * ## Ajout de dépendance 
 La syntaxe est la suivante :
@@ -242,11 +247,11 @@ Il faut aussi noter que ton fichier `composer.json` a été mis à jour. La libr
 composer remove twig/twig
 ```
 
-##### [Return to Top](#notes-composer)
+[Return to Top](#notes-composer)
 
-# **composer.json VS composer.lock**
+# 6. **composer.json VS composer.lock**
 
-## composer.json
+## 6.1. composer.json
 
 * C’est vous qui le définissez
 * Reflète vos souhaits
@@ -254,7 +259,7 @@ composer remove twig/twig
 * On l’utilise essentiellement en environnement de DEV
 * Ressource de la commande update
 
-## composer.lock
+## 6.2. composer.lock
 
 * Généré par composer
 * Reflète l’existant
@@ -266,8 +271,8 @@ Il faut impérativement versionner ton fichier composer.lock (en plus du fichier
 
 
 
-##### [Return to Top](#notes-composer)
-# **Mise à jour**
+[Return to Top](#notes-composer)
+# 7. **Mise à jour**
 
 ```sh
 composer install
