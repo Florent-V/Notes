@@ -292,7 +292,9 @@ database
 
 Ce fichier permettra de créer un pool de connexion à l'aide des variables d'environnement puis essaiera d'obtenir une première connexion depuis le pool pour vérfier que tout se passe bien.
 
-## Ecrire une première requête
+# CRUD : GET avec MySQL
+
+## Ecrire une première requête GET
 
 En utilisant l'objet `database`, on peut envoyer des requêtes en utilisant la méthode `query()`. - Cette méthode prend comme premier paramètre une chaîne de caractère qui sera le code SQL de la requête.
 - Ici on utilise la version avec les promesses on va chaîner l'appel à `query()` avec les méthodes `.then()` et `.catch()` pour intercepter les erreurs.
@@ -329,11 +331,13 @@ const getMovies = (req, res) => {
 };
 ```
 
-La méthode `getMovies` sera appelée lors de l'accès à une route de l'API.
+La méthode `getMovies` sera appelée lors de l'accès à une route de l'API : 
+https://www.monapi.com/api/movies
 
-## Ecrire une première requête avec un paramètre
+## Requête GET avec paramètres
 
-Si on veut trouver un film avec son id, on va devoir transmettre l'id comme paramètre :
+Si on veut trouver un film avec son id, on va devoir transmettre l'id comme paramètre à l'URL :
+https://www.monapi.com/api/movies/1
 
 ``` js
 const getMovieById = (req, res) => {
@@ -367,22 +371,133 @@ const getMovieById = (req, res) => {
     });
 };
 ```
+## Paramètre d'URL et query string
 
-``` js
+Il y a deux types de paramètres dans une URL. Les paramètres de route et les paramètres de requête.
 
+### Les paramètres d'URL
+Ils font partie de la route URL appelée par le client :
+- `GET` : `/movies` retourner une liste de TOUS les éléments "movies" dans la base de données.
+- `GET` `/movies/<idNumber>` (ex: /movies/12) renvoie un seul objet de type "movies" avec l'id de <idNumber>.
+
+Les paramètres d'URL sont accessibles via `req.params`
+
+### Les paramètres de requête : query string
+
+Ce ne sont pas des paramètres d'URL. Les paramètres de requête doivent être utilisés pour tout type de filtrage que l'on prévoit d'utiliser sur la ressource spécifiée.
+- GET : `/car/make/12/model` retourne d'une liste de modèles de voitures de la marque qui a l'id 12
+- GET : `/car/make/12/model?color=mintgreen&doors=4` retour d'une liste de modèles de voitures de la marque qui a l'id 12, mais filtrée afin que seuls les modèles à 4 portes et une couleur vert menthe soient renvoyés.
+
+Cela n'a pas de sens d'ajouter ces filtres dans les paramètres URL (`/car/make/12/model/color/mintgreen`) car selon REST, cela impliquerait que nous voulions des informations sur la couleur vert menthe.
+
+Express gère les query string d'une manière similaire aux paramètres URL. Ils sont stockés dans un objet via `req.query` :
+
+``` json
+{
+  "color": "mintgreen",
+  "doors": 4
+}
 ```
 
-``` js
+## Implémenter un filtre
 
+Voici une fonction getMovies qui sera appelée sur la route `/movies` :
+``` js
+const getMovies = (req, res) => {
+  const initialSql = "select * from movies";
+  const where = [];
+
+  if (req.query.color != null) {
+    where.push({
+      column: "color",
+      value: req.query.color,
+      operator: "=",
+    });
+  }
+  if (req.query.max_duration != null) {
+    where.push({
+      column: "duration",
+      value: req.query.max_duration,
+      operator: "<=",
+    });
+  }
+
+  database
+    .query(
+      where.reduce(
+        (sql, { column, operator }, index) =>
+          `${sql} ${index === 0 ? "where" : "and"} ${column} ${operator} ?`,
+        initialSql
+      ),
+      where.map(({ value }) => value)
+    )
+    .then(([movies]) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
+```
+Si avec les critères de recherche on reçoit un tableau vide c'est tout de même le code 200 qui est envoyé. Là où dans la requête `/movies/7`, si la ressource 7 n'existe pas, c'est une 404 qui est renvoyé. Une ressource au singulier est considérée comme existante (200) ou inexistante (404) alors qu'une collection, même si elle est vide, retourne un code 200.
+
+
+# Enregistrement des utilisateurs
+
+Les utilisateurs doivent être enregistrés de manière sécurisée et les mots de passe ne doivent pas être stocké en clair dans la basse de donnée. Ils doivent être hasher avant d'être stocké afin qu'ils soient inutilisables si la base de données est compromise par des pirates.
+https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+
+## Utilisation d'un algorithme de hash dans Node.js
+
+Il existe de nombreuses bibliothèques qui peuvent aide rà hasher un mot de passe. Ici on utilisera Argon 2. On commence donc par l'installer :
+
+``` sh
+npm i argon2
+```
+https://github.com/ranisalt/node-argon2/wiki/Options
+
+Comme on veut hasher le mot de passe avant de l'insérer en base de données, on va se baser sur l'architecture middleware d'Express.
+
+Dans le dossier `middleware`, on peut placer un fichier `auth.js` :
+
+``` js
+const argon2 = require("argon2");
+
+const hashingOptions = {
+  type: argon2.argon2id,
+  memoryCost: 2 ** 16,
+  timeCost: 5,
+  parallelism: 1,
+};
+
+const hashPassword = (req, res, next) => {
+  argon2
+    .hash(req.body.password, hashingOptions)
+    .then((hashedPassword) => {
+      console.log(hashedPassword);
+
+      req.body.hashedPassword = hashedPassword;
+      delete req.body.password;
+
+      next();
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
+
+module.exports = {
+  hashPassword,
+};
 ```
 
-``` js
+Un hashage produit toujours un hash différent pour le même mot de passe. Lors de l'authentification, en comparant les deux hash, on sait s'ils viennent du même mot de passe.
 
-```
+# Authentification avec JWT
 
-``` js
 
-```
 
 ``` js
 

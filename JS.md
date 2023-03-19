@@ -5,7 +5,7 @@
   - [1.2. Travailler avec les objets JSON](#12-travailler-avec-les-objets-json)
     - [1.2.1. En Python](#121-en-python)
     - [1.2.2. En PHP](#122-en-php)
-- [**Jason Web Token (JWT) : Authentification sur une API**](#jason-web-token-jwt--authentification-sur-une-api)
+- [**Json Web Token (JWT) : Authentification sur une API**](#json-web-token-jwt--authentification-sur-une-api)
   - [Explications rapides du JWT](#explications-rapides-du-jwt)
   - [Préparatifs](#préparatifs)
   - [Obtention du token](#obtention-du-token)
@@ -471,7 +471,7 @@ echo json_encode($people_info, JSON_PRETTY_PRINT|JSON_PRESERVE_ZERO_FRACTION);
 */
 ?>
 ```
-# **Jason Web Token (JWT) : Authentification sur une API**
+# **Json Web Token (JWT) : Authentification sur une API**
 
 ## Explications rapides du JWT
 
