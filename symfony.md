@@ -244,7 +244,7 @@ Organisation de l'arborescence :
 Sans que l'on s'en rende compte, Symfony a fait pas mal de choses. Dans le dossier wild-series, tu trouveras un ensemble de fichiers et de dossiers qui constituent l'architecture de ton projet Symfony.
 On y trouve tous les outils nécessaires pour construire une plateforme sur des bases saines et solides. 
 
-![architecture](./img/52.png)
+![architecture](./img/53.png)
 
 https://symfony.com/doc/current/page_creation.html#checking-out-the-project-structure
 

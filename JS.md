@@ -475,6 +475,15 @@ echo json_encode($people_info, JSON_PRETTY_PRINT|JSON_PRESERVE_ZERO_FRACTION);
 
 ## Explications rapides du JWT
 
+Habituellement lorsque l'on se connecte sur un site web, une fois le login passé, le serveur renvoie une **preuve d'authentification**. Cette preuve est ensuite **stockée** par le client (navigateur) et **envoyée** au serveur dans les requêtes suivants. Cela peut être un **cookie** avec un identifiant de session par exemple. 
+
+Mais l'utilisateur d'une session signifie que le serveur stocke les données pour chaque personne connectée, or le principe des API Rest est qu'une **API doit être sans état**.. Ce qui signifie que le serveur ne doit **stocker aucune information** sur qui fait les requêtes. Au lieu de cela, il doit founir une chaîne de caractère unique (chaque personne doit avoir une chaîne différente) pour identfier ses clients. Cet identifiant unique est appelée un token (ou jeton en français).
+
+On doit donc créer une chaîne **unique** (une par client) qui peut contenir les informations sur la personne connectée (comme son identifiant) et que **seul** notre serveur peut créer. Il existe une norme qui couvre cela : le **JWT**.
+![JSON](./img/65.png)
+![JSON](./img/63.png)
+![JSON](./img/64.png)
+
 Le JWT est un token composé de 3 parties séparées par un point :
 - Le **Header**
 Le header détermine le type de token : JWT et l'algorithme de chiffrement HS256 (HMAC avec du SHA-256) ou RS256 (signature RSA avec du SHA-256).
@@ -499,7 +508,7 @@ Puis installez les modules
 - `npm i -D morgan`
 
 - express (version XX) : le framework HTTP
-- jsonwebtoken (version XX) : générer un JWT
+- jsonwebtoken (version XX) : générer un JWT https://www.npmjs.com/package/jsonwebtoken
 - cors (version XX) : activer le CORS
 - morgan (version XX) : avoir des logs dans le terminal.
 

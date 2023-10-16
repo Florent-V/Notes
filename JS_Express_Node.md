@@ -497,44 +497,214 @@ Un hashage produit toujours un hash différent pour le même mot de passe. Lors 
 
 # Authentification avec JWT
 
+## Login
 
+Pour s'identifier, l'utilisateur va donc entre ses identifiants. Le plus souvent  :
+- un email
+- un mot de passe
 
-``` js
-
-```
-``` js
-
-```
-
-``` js
-
-```
+Dans une route /api/login, la requête de connexion ressemblerait à ceci :
 
 ``` js
+POST http://localhost:5000/api/login
+Content-type: application/json
 
-```
-
-``` js
-
+{
+  "email": "dwight@theoffice.com",
+  "password": "123456"
+}
 ```
 
-``` js
+Il va donc falloir :
+- Créer la route
+- Récupérer dans la BDD le mot de passe hashé de l'utilisateur pour l'email envoyé dans la requête
+- Vérifier que le mot de passe hashé correspond au mot de passe envoyé dans la requête.
 
+Pour cela on va utiliser encore une fois les middlewares.
+
+Pour la route :
+
+``` js
+router.post("/api/login", userController.getUserByEmailWithPassword, verifyPassword);
+```
+La fonction `getUserByEmailWithPassword`
+
+``` js
+const getUserByEmailWithPassword = (req, res, next) => {
+  const { email } = req.body;
+
+  database
+    .query("select * from users where email = ?", [email])
+    .then(([users]) => {
+      if (users[0] != null) {
+        req.user = users[0];
+
+        next();
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
 ```
 
-``` js
+La vérification se fait avec le package argon2 qui avait déjà servi à hasher le mot de passe. On peut donc ajouter la fonction `verifyPassword` dans le fichier `auth.js`.
 
+``` js
+const verifyPassword = (req, res) => {
+  argon2
+    .verify(req.user.hashedPassword, req.body.password)
+    .then((isVerified) => {
+      if (isVerified) {
+        res.send("Credentials are valid");
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
 ```
-``` js
 
+## Le Json Web Token : JWT
+
+Habituellement lorsque l'on se connecte sur un site web, une fois le login passé, le serveur renvoie une **preuve d'authentification**. Cette preuve est ensuite **stockée** par le client (navigateur) et **envoyée** au serveur dans les requêtes suivants. Cela peut être un **cookie** avec un identifiant de session par exemple. 
+
+Mais l'utilisateur d'une session signifie que le serveur stocke les données pour chaque personne connectée, or le principe des API Rest est qu'une **API doit être sans état**.. Ce qui signifie que le serveur ne doit **stocker aucune information** sur qui fait les requêtes. Au lieu de cela, il doit founir une chaîne de caractère unique (chaque personne doit avoir une chaîne différente) pour identfier ses clients. Cet identifiant unique est appelée un token (ou jeton en français).
+
+On doit donc créer une chaîne **unique** (une par client) qui peut contenir les informations sur la personne connectée (comme son identifiant) et que **seul** notre serveur peut créer. Il existe une norme qui couvre cela : le **JWT**.
+
+Il faut donc d'abord installer le paquet `jsonwebtoken` sur notre serveur pour créer les JWT.
+
+https://www.npmjs.com/package/jsonwebtoken
+
+``` js
+npm install jsonwebtoken
 ```
 
-``` js
+Ensuite il faut l'importer dans le fichier `auth.js` et l'inclure dans la fonction `verifyPassword` :
 
+``` js
+const jwt = require("jsonwebtoken"); // don't forget to import
+
+const verifyPassword = (req, res) => {
+  argon2
+    .verify(req.user.hashedPassword, req.body.password)
+    .then((isVerified) => {
+      if (isVerified) {
+        const payload = { sub: req.user.id };
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "1h",
+        });
+
+        delete req.user.hashedPassword;
+        res.send({ token, user: req.user });
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.sendStatus(500);
+    });
+};
 ```
 
-``` js
+Il ne faut pas oublier d'ajouter le JWT_SECRET aux variables d'environnement. C'est une chaîne de caractère secrète, propre au serveur, qui lui permet de signer le JWT.
 
+Cette fonction retournera donc le JWT dont l'utilisateur se servira pour accéder à des ressources protégés.
+
+**N'importe qui peut lire le contenu des jetons**, mais **SEUL** ton serveur peut les créer. Pour vérifier cela, on peut se rendre toi sur `jwt.io` et copier/coller un de tes tokens reçu. La payload peut être entièrement décodée mais pas la signature.
+
+## Protection des routes
+
+Maintenant que l'on peut obtenir une preuve d'authentification, on peut désormais protéger nos routes.
+Si on peut protéger les routes d'ajout de films ou de livres, on peut rejeter les demandes sauf si elle contient une en-tête `Authorization` avec le schéma d'authentification `Bearer` suivi par un jeton valide.
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Authorization
+
+Exemple :
+``` js
+POST http://localhost:5000/api/movies
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjcsImlhdCI6MTY2MDIwMjczMywiZXhwIjoxNjYwMjA2MzMzfQ._5PYuoPoBfDtzq6fMsUn_8YGhfqtt_OaBVMHhe-FHlU
+Content-type: application/json
+
+{
+  "title": "Citizen Kane",
+  "director": "Orson Wells",
+  "year": "1941",
+  "color": "0",
+  "duration": 120
+}
+```
+On va donc créer un nouveau middleware `verifyToken` dans `auth.js` qui va faire ce travail
+
+``` js
+const verifyToken = (req, res, next) => {
+  try {
+    const authorizationHeader = req.get("Authorization");
+
+    if (authorizationHeader == null) {
+      throw new Error("Authorization header is missing");
+    }
+
+    const [type, token] = authorizationHeader.split(" ");
+
+    if (type !== "Bearer") {
+      throw new Error("Authorization header has not the 'Bearer' type");
+    }
+
+    req.payload = jwt.verify(token, process.env.JWT_SECRET);
+
+    next();
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(401);
+  }
+}
+```
+
+Il suffit alors de placer cette fonction dans la définition de la route :
+
+``` js
+router.post("/", verifyToken, validator.validateMovieExpress, movieController.create);
+router.put("/:id", verifyToken, validator.validateMovieExpress, movieController.updateById);
+```
+ ## Mur d'authentification
+
+ Ajouter le middleware `verifyToken` sur chaque route que l'on souhaite protéger peut être fastidieux. Un moyen pratique consiste à d'abord répartir les routes entre celles qui sont publiques et celles qui doivent être protégées.
+
+ Ensuite on va construire un "mur d'authentification" entre les deux parties. Chaqye route avant le mur restera inchangée, mais chaque route après le mur va nécessiter un jeton pour fonctionner.
+
+ On peut construire un tel mur en activant le middleware verifyToken avec app.use sans aucun path. Le middleware sera exécuté pour toutes les requêtes à l'application déclarées après l'appel à app.use :
+
+``` js
+// the public routes
+
+app.get("/api/movies", movieHandlers.getMovies);
+app.get("/api/movies/:id", movieHandlers.getMovieById);
+
+app.post(
+  "/api/login",
+  userHandlers.getUserByEmailWithPasswordAndPassToNext,
+  verifyPassword
+); // /!\ login should be a public route
+
+// then the routes to protect
+
+app.use(verifyToken); // authentication wall : verifyToken is activated for each route after this line
+
+app.post("/api/movies", movieHandlers.postMovie);
+app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
+
+// ...
 ```
 
 ``` js
