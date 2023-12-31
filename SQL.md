@@ -1,22 +1,108 @@
 # Notes SQL
 
-## Tables of contents
-
 - [Notes SQL](#notes-sql)
-  - [Tables of contents](#tables-of-contents)
 - [1. **Installation de MySQL**](#1-installation-de-mysql)
 - [2. **Création d'une base de donnée**](#2-création-dune-base-de-donnée)
+  - [2.1. Importer une BDD existante](#21-importer-une-bdd-existante)
+  - [2.2. Voir les BDD de l'utilisateurs :](#22-voir-les-bdd-de-lutilisateurs-)
+  - [2.3. Voir les tables d'une BDD :](#23-voir-les-tables-dune-bdd-)
+  - [2.4. Voir la description d'une table :](#24-voir-la-description-dune-table-)
+  - [2.5. Créer une base de données :](#25-créer-une-base-de-données-)
+  - [2.6. Créer une table dans une BDD :](#26-créer-une-table-dans-une-bdd-)
+    - [2.6.1. Se placer dans une BDD :](#261-se-placer-dans-une-bdd-)
+    - [2.6.2. Utiliser la syntaxe générale suivante :](#262-utiliser-la-syntaxe-générale-suivante-)
+    - [2.6.3. Exemples](#263-exemples)
 - [3. **Récupérer les informations**](#3-récupérer-les-informations)
+  - [3.1. La commande SELECT](#31-la-commande-select)
+    - [3.1.1. Syntaxe de base](#311-syntaxe-de-base)
+    - [3.1.2. Récupérer toutes les données d'une table](#312-récupérer-toutes-les-données-dune-table)
+    - [3.1.3. Ne récupérer que des champs en particulier](#313-ne-récupérer-que-des-champs-en-particulier)
+    - [3.1.4. Utiliser des alias plutôt que le nom des champs](#314-utiliser-des-alias-plutôt-que-le-nom-des-champs)
+  - [3.2. La clause WHERE](#32-la-clause-where)
+    - [3.2.1. Syntaxe de base](#321-syntaxe-de-base)
+    - [3.2.2. Exemples](#322-exemples)
+  - [3.3. ORDER / LIMIT](#33-order--limit)
+    - [3.3.1. Syntaxe de base](#331-syntaxe-de-base)
+    - [3.3.2. Autre exemple :](#332-autre-exemple-)
+  - [3.4. Eliminer les doublons : DISTINCT](#34-eliminer-les-doublons--distinct)
 - [4. **Manipuler/Modifier les données**](#4-manipulermodifier-les-données)
+  - [4.1. Modifier une table : ALTER](#41-modifier-une-table--alter)
+  - [4.2. Ajouter un champ : ALTER TABLE + ADD](#42-ajouter-un-champ--alter-table--add)
+  - [4.3. Modifier un champ : ALTER TABLE + MODIFY](#43-modifier-un-champ--alter-table--modify)
+  - [4.4. Supprimer un champ : ALTER TABLE + DROP](#44-supprimer-un-champ--alter-table--drop)
+  - [4.5. Ajouter des données : INSERT](#45-ajouter-des-données--insert)
+  - [4.6. Modifer les données : UPDATE](#46-modifer-les-données--update)
+  - [4.7. Supprimer les données : DELETE](#47-supprimer-les-données--delete)
+  - [4.8. Renommer une table : RENAME](#48-renommer-une-table--rename)
+  - [4.9. Supprimer un champ](#49-supprimer-un-champ)
+  - [4.10. Vider une table : TRUNCATE](#410-vider-une-table--truncate)
+  - [4.11. Supprimer une table](#411-supprimer-une-table)
+  - [4.12. Supprimer la BDD](#412-supprimer-la-bdd)
+  - [4.13. Exporter la BDD](#413-exporter-la-bdd)
 - [5. **Bilan**](#5-bilan)
-  - [5.1. Création base, table et insertion de valeur :](#51-création-base-table-et-insertion-de-valeur-)
+  - [5.1. Création base, table et insertion de valeur](#51-création-base-table-et-insertion-de-valeur)
 - [6. **Les bases de la modélisation**](#6-les-bases-de-la-modélisation)
+  - [6.1. MODELISATION CONCEPTUELLEE DE DONNEES (MCD)](#61-modelisation-conceptuellee-de-donnees-mcd)
+    - [6.1.1. **Les entités :**](#611-les-entités-)
+    - [6.1.2. **Les relations :**](#612-les-relations-)
+    - [6.1.3. **Les cardinalités :**](#613-les-cardinalités-)
+  - [6.2. Passage de la MCD à la MLD (Modèle Logique de Données)](#62-passage-de-la-mcd-à-la-mld-modèle-logique-de-données)
+    - [6.2.1. **1. Many To One (1-N)**](#621-1-many-to-one-1-n)
+    - [6.2.2. **2. One To One (1-1)**](#622-2-one-to-one-1-1)
+    - [6.2.3. **3. Many To Many (N-M)**](#623-3-many-to-many-n-m)
+  - [6.3. Modèle Physique de Données (MPD)](#63-modèle-physique-de-données-mpd)
+    - [6.3.1. Les clés étrangères](#631-les-clés-étrangères)
+    - [6.3.2. **1. Many To One (1-N)**](#632-1-many-to-one-1-n)
+      - [6.3.2.1. Exemples :](#6321-exemples-)
+      - [6.3.2.2. New Table With 2 Foreign Keys](#6322-new-table-with-2-foreign-keys)
+      - [6.3.2.3. Add Data in Table](#6323-add-data-in-table)
+    - [6.3.3. **2. One To One (1-1)**](#633-2-one-to-one-1-1)
+    - [6.3.4. **3. Many To Many (N-M)**](#634-3-many-to-many-n-m)
+    - [6.3.5. Les contraintes d'intégrité](#635-les-contraintes-dintégrité)
 - [7. **Les Jointures**](#7-les-jointures)
-  - [7.1. Utilisation des Alias](#71-utilisation-des-alias)
+  - [7.1. INNER JOIN](#71-inner-join)
+    - [7.1.1. Syntaxe](#711-syntaxe)
+    - [7.1.2. Exemple](#712-exemple)
+    - [7.1.3. Utilisation des Alias](#713-utilisation-des-alias)
+    - [7.1.4. Autres Exemples](#714-autres-exemples)
+  - [7.2. Jointures Avancées](#72-jointures-avancées)
+  - [7.3. Join Multiple Tables](#73-join-multiple-tables)
+  - [7.4. LEFT JOIN \& RIGTH JOIN](#74-left-join--rigth-join)
+  - [7.5. UNION](#75-union)
 - [8. **SQL Avancé**](#8-sql-avancé)
+  - [8.1. WHERE Avancée](#81-where-avancée)
+    - [8.1.1. **AND/OR**](#811-andor)
+    - [8.1.2. **LIKE**](#812-like)
+    - [8.1.3. **BETWEEN**](#813-between)
+    - [8.1.4. **IS NULL/IS NOT NULL**](#814-is-nullis-not-null)
+    - [8.1.5. **IN** :](#815-in-)
+  - [8.2. Fonctions SQL](#82-fonctions-sql)
+    - [8.2.1. **DISTINCT**](#821-distinct)
+    - [8.2.2. **CONCAT**](#822-concat)
+    - [8.2.3. **LENGTH**](#823-length)
+  - [8.3. Fonctions Mathématiques](#83-fonctions-mathématiques)
+    - [8.3.1. **RAND**](#831-rand)
+    - [8.3.2. **ROUND**](#832-round)
+    - [8.3.3. **Autres fonctions mathématiques**](#833-autres-fonctions-mathématiques)
+  - [8.4. Fonctions Date](#84-fonctions-date)
+    - [8.4.1. **NOW()**](#841-now)
+    - [8.4.2. **MONTH()**](#842-month)
+    - [8.4.3. **DATEDIFF()**](#843-datediff)
+  - [8.5. Fonctions D'agrégation](#85-fonctions-dagrégation)
+    - [8.5.1. **COUNT()**](#851-count)
+    - [8.5.2. **SUM()**](#852-sum)
+    - [8.5.3. **MAX()**](#853-max)
+    - [8.5.4. **MIN()**](#854-min)
+    - [8.5.5. **AVG()**](#855-avg)
+    - [8.5.6. Exemples](#856-exemples)
+  - [8.6. GROUP BY / HAVING](#86-group-by--having)
+  - [8.7. Administration avancée](#87-administration-avancée)
+  - [8.8. Administration avancée](#88-administration-avancée)
 - [9. **Main Title**](#9-main-title)
-    - [9.0.1. qfsdf](#901-qfsdf)
-      - [9.0.1.1. qfsfsfsfd](#9011-qfsfsfsfd)
+  - [9.1. Subtitle](#91-subtitle)
+    - [9.1.1. qfsdf](#911-qfsdf)
+      - [9.1.1.1. qfsfsfsfd](#9111-qfsfsfsfd)
+
 
 
 [Return to Top](#notes-sql)
@@ -46,21 +132,63 @@ Pour se connecter à notre base de donnée :
 $mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -p
 ```
 
+Depuis root :
+``` sh
+$mysql -u root -p
+```
+
 Pour se connecter à une base de donnée précise :
 
 ``` sh
 $mysql -u USERNAME_YOU_CHOOSE_JUST_BEFORE -D wizard -p
 ```
+
+show Grants
+```sql
+SHOW GRANTS FOR 'someuser'@'localhost';
+```
+
+Remove Grants
+```sql
+REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'someuser'@'localhost';
+```
+
+Delete User
+```sql
+DROP USER 'someuser'@'localhost';
+```
+
+Exit
+```sql
+exit;
+```
+
 [Return to Top](#notes-sql)
 # 2. **Création d'une base de donnée**
 
-* Importer une BDD existante
+## 2.1. Importer une BDD existante
 
 ``` sh
 mysql> source ~/path/to/file.sql
 ```
 
-* Créer une base de données :
+## 2.2. Voir les BDD de l'utilisateurs :
+``` sql
+SHOW DATABASES;
+```
+
+## 2.3. Voir les tables d'une BDD :
+``` sql
+SHOW TABLES;
+```
+
+## 2.4. Voir la description d'une table :
+On voit les différents champs de la table.
+``` sql
+DESCRIBE wizard;
+```
+
+## 2.5. Créer une base de données :
 ``` sql
 CREATE DATABASE wild;
 ```
@@ -69,7 +197,6 @@ On peut également préciser l'encodage des caractères :
 ``` sql
 CREATE DATABASE maBase DEFAULT CHARACTER SET utf8mb4;
 ```
-
 
 Il existe en plus du set de caractère ce qu'on appelle l'interclassement ou collation. Elle précise au set de caractères les spécificités d'une langue. Par exemple que le "E" est semblable au "e" ou au "é".
 
@@ -91,14 +218,14 @@ La commande générique est donc la suivante :
 CREATE DATABASE db_name [DEFAULT CHARACTER SET character_set_name [COLLATE collation_name]];
 ```
 
-* Se placer dans une BDD :
+## 2.6. Créer une table dans une BDD :
+
+### 2.6.1. Se placer dans une BDD :
 ``` sql
 USE wild;
 ```
 
-* Créer une table dans une BDD :
-
-La syntaxe générale est la suivante :
+### 2.6.2. Utiliser la syntaxe générale suivante :
 
 ``` sql
 CREATE TABLE nom_table (
@@ -111,7 +238,7 @@ CREATE TABLE nom_table (
 [ENGINE = MYISAM | INNODB];
 ```
 
-Exemple :
+### 2.6.3. Exemples
 
 ``` sql
 CREATE TABLE `wizard` (
@@ -125,32 +252,35 @@ CREATE TABLE `wizard` (
 );
 ```
 
-* Importer une BDD existante
-
-``` sh
-mysql> source ~/path/to/file.sql
-```
-
-* Voir les BDD de l'utilisateurs :
 ``` sql
-SHOW DATABASES;
+CREATE TABLE users(
+id INT AUTO_INCREMENT,
+   first_name VARCHAR(100),
+   last_name VARCHAR(100),
+   email VARCHAR(50),
+   password VARCHAR(20),
+   location VARCHAR(100),
+   dept VARCHAR(100),
+   is_admin TINYINT(1),
+   register_date DATETIME,
+   PRIMARY KEY(id)
+);
 ```
-* Voir les tables d'une BDD :
-``` sql
-SHOW TABLES;
-```
-* Voir la description d'une table :
 
-On voit les différents champs de la table.
-``` sql
-DESCRIBE wizard;
+* Create & Remove Index
+
+```sql
+CREATE INDEX LIndex On users(location);
+DROP INDEX LIndex ON users;
 ```
+
 [Return to Top](#notes-sql)
 # 3. **Récupérer les informations**
 
-* La commande SELECT
+## 3.1. La commande SELECT
 
-La syntaxe de base est la suivante :
+### 3.1.1. Syntaxe de base
+
 ``` sql
 SELECT <champs> FROM <table>;
 ```
@@ -159,35 +289,43 @@ SELECT colonne1, [colonne2, …]
 FROM nom_table
 [WHERE arguments [ORDER BY DESC|ASC]] [LIMIT un_nombre [OFFSET un_nombre]]
 ```
-Pour récupérer toutes les données d'une table :
+
+### 3.1.2. Récupérer toutes les données d'une table
+
 ``` sql
 SELECT * FROM wizard;
+SELECT * FROM users;
 ```
-Pour ne récupérer que des champs en particulier :
+
+### 3.1.3. Ne récupérer que des champs en particulier
+
 ``` sql
 SELECT firstname, lastname FROM wizard;
+SELECT first_name, last_name FROM users;
 ```
-Utiliser des alias plutôt que le nom des champs :
+
+### 3.1.4. Utiliser des alias plutôt que le nom des champs
+
 ``` sql
 SELECT lastname AS student_name FROM wizard;
 ```
 
-* La clause WHERE
+## 3.2. La clause WHERE
+
+### 3.2.1. Syntaxe de base
 
 ``` sql
 SELECT firstname, birthday FROM wizard WHERE lastname='Weasley';
 ```
-On peut également 
+> On peut également :
+> - Utiliser les signe `!=, >, <, >!, <=`.
+> - Choisir une valeur parmi plusieurs possible avec `IN`, une valeur numérique (ou une date) dans une fourchette avec `BETWEEN xx AND yy`.
+> - Viser une chaîne commençant ou finissant par avec `LIKE et %`
+une valeur `IS NULL` ou `IS NOT NULL`
+> - Combiner les conditions avec `AND` et `OR`
 
-| utiliser les signe `!=, >, <, >!, <=`.
 
-| choisir une valeur parmi plusieurs possible avec `IN`, une valeur numérique (ou une date) dans une fourchette avec `BETWEEN xx AND yy`.
-
-| viser une chaîne commençant ou finissant par avec `LIKE et %`
-
-| une valeur `IS NULL` ou `IS NOT NULL`
-
-On peut également combiner les conditions avec `AND` et `OR`
+### 3.2.2. Exemples
 
 ``` sql
 SELECT firstname, birthday 
@@ -196,19 +334,49 @@ WHERE
 lastname LIKE 'Weas%' AND
 birthday BETWEEN '1970-01-01' AND '2000-01-01';
 ```
-Autre exemple :
+
+```sql
+SELECT * FROM users WHERE age BETWEEN 20 AND 25;
+```
+
 ``` sql
 SELECT *
 FROM films
 WHERE format = 'mp4' OR format = 'webm';
 ```
 
-* ORDER / LIMIT
+```sql
+SELECT * FROM users WHERE location='Massachusetts';
+SELECT * FROM users WHERE location='Massachusetts' AND dept='sales';
+SELECT * FROM users WHERE is_admin = 1;
+SELECT * FROM users WHERE is_admin > 0;
+```
+
+```sql
+SELECT * FROM users WHERE dept LIKE 'd%';
+SELECT * FROM users WHERE dept LIKE 'dev%';
+SELECT * FROM users WHERE dept LIKE '%t';
+SELECT * FROM users WHERE dept LIKE '%e%';
+```
+
+```sql
+SELECT * FROM users WHERE dept NOT LIKE 'd%';
+```
+
+```sql
+SELECT * FROM users WHERE dept IN ('design', 'sales');
+```
+
+## 3.3. ORDER / LIMIT
+
+### 3.3.1. Syntaxe de base
 
 Pour limiter le nombre de résultats :
+
 ``` sql
 SELECT <champs> FROM <table> LIMIT <nb_results>;
 ```
+
 ``` sql
 SELECT * FROM wizard LIMIT 5;
 ```
@@ -217,7 +385,8 @@ Associée à la clause `OFFSET`, la clause `LIMIT` peut être très utilise pour
 ``` sql
 SELECT * FROM wizard LIMIT 5 OFFSET 20;
 ```
-Autre exemple :
+
+### 3.3.2. Autre exemple :
 ``` sql
 SELECT *
 FROM films
@@ -242,7 +411,7 @@ WHERE format = 'mp4' OR format = 'webm'
 ORDER BY id DESC;
 ```
 
-* Eliminer les doublons : DISTINCT
+## 3.4. Eliminer les doublons : DISTINCT
 
 Si on veut savoir tous les âges représentés par les membres de notre site :
 ``` sql
@@ -250,6 +419,7 @@ SELECT ages
 FROM membres
 ORDER BY ages;
 ```
+
 Avec cette commande on affichera tous les membres, ce n'est pas très pratique pour une vue d'ensemble.
 ``` sql
 SELECT DISTINCT ages
@@ -261,20 +431,26 @@ On aura donc la liste de tous les âges représentés par les membres de notre s
 [Return to Top](#notes-sql)
 
 # 4. **Manipuler/Modifier les données**
-* ## Modifier une table : ALTER
+
+## 4.1. Modifier une table : ALTER
 
 Pour modifier des éléments de la base de données :
 ``` sql
 ALTER DATABASE nom_de_la_base CHARACTER SET character_set_name COLLATE collation_name;
 ```
-* ## Ajouter un champ : ALTER TABLE + ADD
+
+## 4.2. Ajouter un champ : ALTER TABLE + ADD
 
 ``` sql
 ALTER TABLE Nom_de_la_table 
 ADD Nom_de_la_colonne Type_de_donnees desc [AFTER colonne];
 ```
 
-* ## Modifier un champ : ALTER TABLE + MODIFY
+```sql
+ALTER TABLE users ADD age VARCHAR(3);
+```
+
+## 4.3. Modifier un champ : ALTER TABLE + MODIFY
 
 Ici on préciser le nom du champ à modifier.
 ``` sql
@@ -286,14 +462,18 @@ Changer et renommer une colonne :
 ALTER TABLE nom_table
 CHANGE nom_colonne nouveau_nom_colonne TYPE [NULL|NOT NULL] [AUTO_INCREMENT];
 ```
-* ## Supprimer un champ : ALTER TABLE + DROP
+
+```sql
+ALTER TABLE users MODIFY COLUMN age INT(3);
+```
+## 4.4. Supprimer un champ : ALTER TABLE + DROP
 
 Ici on préciser le nom du champ à modifier.
 ``` sql
 ALTER TABLE Nom_de_la_table
 DROP COLUMN Nom_de_la_colonnE
 ```
-* ## Ajouter des données : INSERT
+## 4.5. Ajouter des données : INSERT
 
 La syntaxe est la suivante :
 
@@ -306,6 +486,10 @@ Pour ajouter une valeur dans la table school  :
 INSERT INTO school (name, country, capacity) VALUES ('Hogwarts School of Witchcraft and Wizardry', 'United Kingdom', 400);
 ```
 
+```sql
+INSERT INTO users (first_name, last_name, email, password, location, dept, is_admin, register_date) values ('Brad', 'Traversy', 'brad@gmail.com', '123456','Massachusetts', 'development', 1, now());
+```
+
 On peut également en ajouter plusieurs en même temps :
 ``` sql
 INSERT INTO school (name, country, capacity) 
@@ -314,7 +498,11 @@ VALUES ('Beauxbatons Academy of Magic', 'France', 550),
 ('Durmstrang Institute', 'Norway', 570);
 ```
 
-* ## Modifer les données : UPDATE
+```sql
+INSERT INTO users (first_name, last_name, email, password, location, dept,  is_admin, register_date) values ('Fred', 'Smith', 'fred@gmail.com', '123456', 'New York', 'design', 0, now()), ('Sara', 'Watson', 'sara@gmail.com', '123456', 'New York', 'design', 0, now()),('Will', 'Jackson', 'will@yahoo.com', '123456', 'Rhode Island', 'development', 1, now()),('Paula', 'Johnson', 'paula@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now()),('Tom', 'Spears', 'tom@yahoo.com', '123456', 'Massachusetts', 'sales', 0, now());
+```
+
+## 4.6. Modifer les données : UPDATE
 
 La syntaxe est la suivante :
 ``` sql
@@ -332,9 +520,13 @@ SET capacity = 450
 WHERE id = 1;
 ```
 
+```sql
+UPDATE users SET email = 'freddy@gmail.com' WHERE id = 2;
+```
+
 La plupart du temps on ne souhaite modifier qu'une valeur donc on utilise la clé primaire pour s'assumer de n'identifier que cette ligne.
 
-* ## Supprimer les données : UPDATE
+## 4.7. Supprimer les données : DELETE
 
 La syntaxe est la suivante :
 
@@ -356,15 +548,17 @@ Ou encore :
 DELETE FROM school
 WHERE capacity > 500;
 ```
+```sql
+DELETE FROM users WHERE id = 6;
+```
 
-
-* ## Renommer une table : RENAME
+## 4.8. Renommer une table : RENAME
 
 ``` sql
 RENAME TABLE ancien_nom TO nouveau_nom;
 ```
 
-* ## Supprimer un champ
+## 4.9. Supprimer un champ
 
 ``` sql
 ALTER TABLE table1
@@ -377,7 +571,7 @@ ALTER TABLE wizard
 DROP COLUMN birthday,
 DROP COLUMN biography;
 ```
-* ## Vider une table : TRUNCATE
+## 4.10. Vider une table : TRUNCATE
 
 Pour vider une table de toutes ses données, on utilise la commande `TRUNCATE`. Cela ne supprimer pas la structure de la table. Cette commande est plus performante qu'un `DELETE`.  
 De plus `TRUNCATE` réinitialise l'auto-incrémentation, ce qui n'est pas le cas de `DELETE`.
@@ -386,18 +580,18 @@ De plus `TRUNCATE` réinitialise l'auto-incrémentation, ce qui n'est pas le cas
 TRUNCATE school;
 ```
 
-* ## Supprimer une table
+## 4.11. Supprimer une table
 
 ``` sql
 DROP TABLE table1, table2 ;
 ```
-* ## Supprimer la BDD
+## 4.12. Supprimer la BDD
 
 ``` sql
 DROP DATABASE test ;
 ```
 
-* ## Exporter la BDD
+## 4.13. Exporter la BDD
 
 ``` sql
 mysqldump -u [username] -p [database-you-want-to-dump] > [path-to-place-data-dump];
@@ -410,7 +604,9 @@ mysqldump -u florent -p mydatabase > /home/myuser/database-dump.sql
 
 [Return to Top](#notes-sql)
 # 5. **Bilan**
-## 5.1. Création base, table et insertion de valeur :
+
+## 5.1. Création base, table et insertion de valeur
+
 ``` sql
 CREATE DATABASE checkpoint1;
 USE checkpoint1;
@@ -433,20 +629,20 @@ VALUES ('Alexandre D', 250),
 [Return to Top](#notes-sql)
 # 6. **Les bases de la modélisation**
 
+## 6.1. MODELISATION CONCEPTUELLEE DE DONNEES (MCD)
 
-* ## MODELISATION CONCEPTUELLEE DE DONNEES (MCD)
-
-
-**Les entités :** Une entité est un regroupement d’éléments ayant les mêmes caractéristiques. Une entité possède des propriétés permettant de caractériser celle-ci :un nom et un prénom pour un élève ; un nom et une capacité pour une école ; un titre et un nombre de pages pour un livre, etc.).   
+### 6.1.1. **Les entités :**
+Une entité est un regroupement d’éléments ayant les mêmes caractéristiques. Une entité possède des propriétés permettant de caractériser celle-ci :un nom et un prénom pour un élève ; un nom et une capacité pour une école ; un titre et un nombre de pages pour un livre, etc.).   
 Il faut également un identifiant unique qui permettra de caractériser sans ambiguïté possible un représentant de cette entité.
 ![Entités](./img/10.png)
 
-
-**Les relations :** ce sont les liens entre deux entités ou plus. Une relation peut parfois posséder elle-même des attributs. En effet, pour l’emprunt, une date peut être associée (pour calculer une date de retour limite).  
+### 6.1.2. **Les relations :**
+Ce sont les liens entre deux entités ou plus. Une relation peut parfois posséder elle-même des attributs. En effet, pour l’emprunt, une date peut être associée (pour calculer une date de retour limite).  
 Par exemple, pour la bibliothèque de Poudlard, si tu as une entité Wizard et une entité Book, un sorcier va pouvoir interagir avec un livre en empruntant celui-ci.
 ![Relation](./img/11.png)
 
-**Les cardinalités :** On parle de cardinalités pour décrire le nombre d'interactions possibles entre un élément d’une entité et une autre entité.  
+### 6.1.3. **Les cardinalités :**
+On parle de cardinalités pour décrire le nombre d'interactions possibles entre un élément d’une entité et une autre entité.  
 Par exemple, un sorcier ne pourra être inscrit que dans une seule école à la fois (ou ne pas être inscrit du tout) et une école peut accueillir de 0 à N sorciers.   
 Pour une association de 2 entités, il y a donc 4 cardinalités à indiquer :
 - La cardinalité de la relation Wizard -> School est donc 0-1.
@@ -460,12 +656,11 @@ Le sens de la cardinalité est donc important.
 ![Exemple](./img/20.png)
 
 
-
-* ## Passage de la MCD à la MLD (Modèle Logique de Données)
+## 6.2. Passage de la MCD à la MLD (Modèle Logique de Données)
 
 On ne garde que les entités On prend les bornes maximales des cardinalités des deux côtés pour déterminer le type de relation, 3 possibles :
 
-**1. Many To One (1-N)**
+### 6.2.1. **1. Many To One (1-N)**
 
 C’est le cas juste d'un élève inscrit dans 0 ou 1 seule Ecole  alors qu'une école peut inscrire de 0 à N élèves.
 
@@ -473,11 +668,11 @@ Ajout d’une clé étrangère côté “1”. Ce champ prend la valeur d’un c
 ![Schéma](./img/21.png)
 ![Foreign key](./img/25.png)
 
-**2. One To One (1-1)**
+### 6.2.2. **2. One To One (1-1)**
 
 Une relation unique entre deux entités. Par exemple, un Sorcier ne pourra posséder qu’une et une seule Baguette, et une Baguette n’a qu’un seul Sorcier.
 
-**3. Many To Many (N-M)**
+### 6.2.3. **3. Many To Many (N-M)**
 
 Une entité peut interagir avec plusieurs éléments d’une autre entité, et vice versa. Par exemple, un Sorcier peut connaître plusieurs Sortilèges, et un sortilège peut être connu par plusieurs Sorciers en même temps.
 Pour cette dernière relation, les cardinalités maximales sont bien N-N mais on écrit plutôt N-M.
@@ -486,11 +681,10 @@ Exemple : Plusieurs écoles ET plusieurs langages. On prend les plus grandes car
 Création d’une table de jointure contenant les deux clés étrangères (ce couple de clés peut suffire comme clé primaire de la table de jointure).  
 ![Schéma](./img/23.png)
 
-
 Bilan :
 ![Schéma](./img/24.png)
 
-* ## Modèle Physique de Données (MPD)
+## 6.3. Modèle Physique de Données (MPD)
 
 Le niveau physique tient compte des particularités de chaque SGBDR :
 - Types des données (INT, VARCHAR, CHAR, BOOL…) 
@@ -503,8 +697,7 @@ Schéma final de base de donées : le nom de l’entité devient un nom de table
 ![Schéma](./img/13.png)
 
 
-
-* ## Les clés étrangères
+### 6.3.1. Les clés étrangères
 
 Les clés étrangères servent à indiquer à une table qu’elle est reliée à une autre table.  
 En règle générale, une clé étrangère fait référence à une clé primaire d’une autre table (puisque la clé primaire permet d’identifier formellement un tuple) mais tu pourrais très bien faire référence à un autre champ “unique” de la table si celle-ci en possède.
@@ -512,7 +705,7 @@ En règle générale, une clé étrangère fait référence à une clé primaire
 
 Les règles de création des clés étrangères dépendent du type de relation entre les entités.
 
-**1. Many To One (1-N)**
+### 6.3.2. **1. Many To One (1-N)**
 
 C’est le type de relation la plus fréquente et la plus simple à gérer. Un sorcier est dans une seule école (côté 1 de la relation 1-N), mais une école peut recevoir plusieurs sorciers (côté N de la relation 1-N). Dans ce cas, tu ajoutes toujours dans la table ayant la plus faible cardinalité (0 ou 1), ici wizard, la clé étrangère référençant la table de plus haute cardinalité (le N), ici school, qu'on appellera par exemple `school_id`.   
 
@@ -525,6 +718,8 @@ Cependant on peut toujours à ce stade affecter un `school_id` à un sorcier d'u
 Pour pallier ce problème, il existe un type de contrainte appelée clé étrangère ou foreign key. Elle permet d’empêcher une insertion dans la table `wizard` si la valeur du `school_id` associée n’existe pas dans la table school (idem, elle empêche la suppression d’un tuple qui serait relié à des données dans une autre table). Ainsi, cela te protège de nombreuses erreurs. C’est donc indispensable pour conserver des données saines et cohérentes.
 
 Pour définir une contrainte de clé étrangère, une fois le champ `school_id` créé, il faut taper la commande SQL suivante :
+
+#### 6.3.2.1. Exemples :
 
 ``` sql
 ALTER TABLE wizard
@@ -545,6 +740,43 @@ CREATE TABLE wizard (
 );
 ```
 
+```sql
+CREATE TABLE posts(
+id INT AUTO_INCREMENT,
+   user_id INT,
+   title VARCHAR(100),
+   body TEXT,
+   publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY(id),
+   FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+* Add Data to Posts Table
+
+```sql
+INSERT INTO posts(user_id, title, body) VALUES (1, 'Post One', 'This is post one'),(3, 'Post Two', 'This is post two'),(1, 'Post Three', 'This is post three'),(2, 'Post Four', 'This is post four'),(5, 'Post Five', 'This is post five'),(4, 'Post Six', 'This is post six'),(2, 'Post Seven', 'This is post seven'),(1, 'Post Eight', 'This is post eight'),(3, 'Post Nine', 'This is post none'),(4, 'Post Ten', 'This is post ten');
+```
+
+#### 6.3.2.2. New Table With 2 Foreign Keys
+
+```sql
+CREATE TABLE comments(
+	id INT AUTO_INCREMENT,
+    post_id INT,
+    user_id INT,
+    body TEXT,
+    publish_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(id),
+    FOREIGN KEY(user_id) references users(id),
+    FOREIGN KEY(post_id) references posts(id)
+);
+```
+#### 6.3.2.3. Add Data in Table
+
+```sql
+INSERT INTO comments(post_id, user_id, body) VALUES (1, 3, 'This is comment one'),(2, 1, 'This is comment two'),(5, 3, 'This is comment three'),(2, 4, 'This is comment four'),(1, 2, 'This is comment five'),(3, 1, 'This is comment six'),(3, 2, 'This is comment six'),(5, 4, 'This is comment seven'),(2, 3, 'This is comment seven');
+```
+
 Dans les deux cas, les mots-clés à retenir sont :
 
     CONSTRAINT : tu indiques ici le nom que tu souhaites, qui te permet d’identifier ta contrainte.
@@ -552,7 +784,7 @@ Dans les deux cas, les mots-clés à retenir sont :
     REFERENCES () : et ce dernier mot-clé indique que la clé étrangère fait référence ici au champ id de la table school.
 
 
-**2. One To One (1-1)**
+### 6.3.3. **2. One To One (1-1)**
 
 One To One : reprend l’exemple donné plus haut d’un Sorcier (table `wizard`) qui possède une et une seule Baguette (table `wand`). Dans ce cas, il y a deux solutions possibles. Soit la table `wizard` prend une clé étrangère `wand_id`, soit la table `wand` prend une clé étrangère `wizard_id`. C’est donc à nous de choisir la solution qui te semble la plus pratique, en fonction des requêtes que tu seras amené à faire.
 
@@ -560,7 +792,7 @@ La relation reste donc de type 1-1. Ici, on choisit de mettre une clé wizard_id
 
 ![one-to-one](./img/15.png)
 
-**3. Many To Many (N-M)**
+### 6.3.4. **3. Many To Many (N-M)**
 
 Ce derniercas, et le plus compliqué est la relation N-M. Ici un élève peut emprunter plusieurs livres, et un livre peut être emprunté par plusieurs élèves. 
 Dans ce cas, on ne peut ni mettre une clé `book_id` dans `wizard`, ni mettre une clé `wizard_id` dans `book`.
@@ -571,7 +803,7 @@ Dans ce cas, la relation est de type N-M. Il faut donc créer une table intermé
 
 Remarque : ces différentes règles te permettent de passer d’un MCD à un MLD (Modèle Logique de Données). La partie MPD (Modèle Physique de données) est moins utile de nos jours. Elle est censée prendre en compte les spécificités du SGBDR utilisé, mais celles-ci étant beaucoup plus proches aujourd’hui qu’à l’époque où Merise à été créé, cette étape est aujourd’hui bien moins pertinente. Tes MLD/MPD peuvent être “fusionnés”. Il faut que ton MLD soit le reflet de ta base finale (telle qu’elle sera écrite en SQL), avec toutes les informations sur les tables, leurs champs et les types utilisés pour ces champs.
 
-* ## Les contraintes d'intégrité
+### 6.3.5. Les contraintes d'intégrité
 
 Règles à suivre quand des enregistrements de tables reliées sont mis à jour ou supprimés. Exemple : 
 
@@ -597,9 +829,12 @@ Options après `ON DELETE`  et `ON UPDATE` :
 - `RESTRICT` : si je tente de supprimer la clé primaire, empêche la suppression si id référencée ailleurs
 
 
-
 [Return to Top](#notes-sql)
 # 7. **Les Jointures**
+
+## 7.1. INNER JOIN
+
+### 7.1.1. Syntaxe
 
 Une fois que tes tables sont reliées avec les **foreign key**, cela va permettre de récupérer les informations de plusieurs tables en une seule requête SQL. Pour cela, on va utiliser les jointures :
 
@@ -613,17 +848,32 @@ INNER JOIN <table2> ON <condition>
 
 ![illus](./img/18.png)
 
-Exemple :
+### 7.1.2. Exemple
+
 ``` sql
 SELECT firstname, lastname, name
 FROM wizard
 INNER JOIN school ON school.id=wizard.school_id;
 ```
-## 7.1. Utilisation des Alias
+
+```sql
+SELECT
+  users.first_name,
+  users.last_name,
+  posts.title,
+  posts.publish_date
+FROM users
+INNER JOIN posts
+ON users.id = posts.user_id
+ORDER BY posts.title;
+```
+
+### 7.1.3. Utilisation des Alias
 
 ``` sql
 SELECT name AS school_name FROM school AS s;
 ```
+
 Ou plus simplement :
 ``` sql
 SELECT name school_name FROM school s;
@@ -635,7 +885,7 @@ FROM wizard as w
 JOIN school as s ON s.id=w.school_id;
 ```
 
-Autre Exemple :
+### 7.1.4. Autres Exemples
 Récupération de tous les élèves de l’école de Bordeaux. Les lignes renvoyées sont celles vérifiant la condition. Elles contiennent les champs des deux tables
 
 ``` sql
@@ -652,7 +902,7 @@ Arthur    | Pendragon  | Bordeaux
 Lancelot  | Du Lac     | Bordeaux
 ```
 
-* ## Jointures Avancées
+## 7.2. Jointures Avancées
 
 **Jointures Imbriquées**
 
@@ -669,8 +919,22 @@ SELECT firstname, name
 
 https://sql.sh/cours/jointures#google_vignette
 
+## 7.3. Join Multiple Tables
 
-**LEFT JOIN & RIGTH JOIN**
+```sql
+SELECT
+comments.body,
+posts.title,
+users.first_name,
+users.last_name
+FROM comments
+INNER JOIN posts on posts.id = comments.post_id
+INNER JOIN users on users.id = comments.user_id
+ORDER BY posts.title;
+```
+
+
+## 7.4. LEFT JOIN & RIGTH JOIN
 
 Par exemple la table wizard possède deux tuples non reliés à une école. Cependant, comment faire si tu souhaites ressortir les informations sur tous les élèves, même ceux non inscrits dans une école ?
 
@@ -747,16 +1011,26 @@ On obtiendrait :
 +-----------+-------------+----------------------------------------------+
 ```
 
-    LEFT JOIN renvoie TOUS les enregistrements de la table de gauche (dans le FROM) même quand il n’y a pas de correspondance avec la table de droite (dans ce cas on renvoie NULL)
-    (INNER) JOIN La plus utilisée. 
+LEFT JOIN renvoie TOUS les enregistrements de la table de gauche (dans le FROM) même quand il n’y a pas de correspondance avec la table de droite (dans ce cas on renvoie NULL)
+(INNER) JOIN La plus utilisée. 
 
-    Renvoie les enregistrements quand la condition (après le ON) est remplie. Seuls les enregistrements communs des tables A et B sont retournés 
+Renvoie les enregistrements quand la condition (après le ON) est remplie. Seuls les enregistrements communs des tables A et B sont retournés 
 
-    RIGHT JOIN renvoie TOUS les enregistrement de la table de droite (après le JOIN) même quand il n’y a pas de correspondance avec la table de gauche (dans ce cas il renvoie NULL)
+RIGHT JOIN renvoie TOUS les enregistrement de la table de droite (après le JOIN) même quand il n’y a pas de correspondance avec la table de gauche (dans ce cas il renvoie NULL)
+
+
+```sql
+SELECT
+comments.body,
+posts.title
+FROM comments
+LEFT JOIN posts ON posts.id = comments.post_id
+ORDER BY posts.title;
+```
 
 https://sql.sh/cours/jointures
 
-**UNION**
+## 7.5. UNION
 UNION permet de cumuler les résultats de deux requêtes
 ``` sql
 SELECT firstname FROM student WHERE firstname LIKE 'A%'
@@ -774,23 +1048,18 @@ Léodagan
 ```
 S’il y a des doublons dans les résultats des deux requêtes, ils ne sont pas affichés. Si on veut les afficher, il faut utiliser UNION ALL
 
-``` sql
-
-
-```
-
 [Return to Top](#notes-sql)
 # 8. **SQL Avancé**
 
-* ## WHERE Avancée
+## 8.1. WHERE Avancée
 
-**AND/OR**
+### 8.1.1. **AND/OR**
 ``` sql
 SELECT firstname, lastname FROM student WHERE firstname='Arthur' AND lastname='Pendragon';
 ```
 Les AND/OR peuvent se suivre et se cumuler.
 
-**LIKE**
+### 8.1.2. **LIKE**
 ``` sql
 SELECT firstname FROM student WHERE firstname LIKE 'L%';
 ```
@@ -802,17 +1071,17 @@ SELECT * FROM student WHERE firstname LIKE '%l%';
 ```
 Renvoie Lancelot, Leodagan, Perceval, Merlin
 
-**BETWEEN**
+### 8.1.3. **BETWEEN**
 ``` sql
 SELECT city, capacity FROM school WHERE capacity BETWEEN 20 AND 40;
 ```
 
-**IS NULL/IS NOT NULL**
+### 8.1.4. **IS NULL/IS NOT NULL**
 ``` sql
 SELECT * FROM school WHERE capacity IS NOT NULL;
 ```
 
-**IN** : 
+### 8.1.5. **IN** : 
 ``` sql
 SELECT * FROM school WHERE city IN ('Reims', 'Lille', 'Biarritz');
 ```
@@ -823,15 +1092,20 @@ SELECT * FROM student
            SELECT id FROM school WHERE capacity>10);
 ```
 
-* ## Fonctions SQL
+## 8.2. Fonctions SQL
 
-**DISTINCT**
+### 8.2.1. **DISTINCT**
 ``` sql
 SELECT DISTINCT(firstname) FROM student;
 ```
 Si un prénom est présent plusieurs fois, le distinct permet de ne l’afficher qu’une seule fois. Les doublons sont ainsi éliminés.
 
-**CONCAT**
+
+```sql
+SELECT DISTINCT location FROM users;
+```
+
+### 8.2.2. **CONCAT**
 ``` sql
 SELECT CONCAT(firstname,' ',lastname) AS fullname FROM student;
 ```
@@ -842,7 +1116,12 @@ fullname
 Arthur Pendragon
 Lancelot Du Lac
 ```
-**LENGTH**
+
+```sql
+SELECT CONCAT(first_name, ' ', last_name) AS 'Name', dept FROM users;
+```
+
+### 8.2.3. **LENGTH**
 ``` sql
 SELECT firstname, LENGTH(firstname) AS len
     FROM student
@@ -859,15 +1138,13 @@ Guenièvre   |  9
 
 Il existe également de nombreuses autres fonctions qui ont pour but de manipuler des chaînes (LOWER(), UPPER(), LENGTH(), REPLACE(), SUBSTRING(), TRIM() ...).
 
-* ## Fonctions Mathématiques
+## 8.3. Fonctions Mathématiques
 
-**RAND**
+### 8.3.1. **RAND**
 Permet de générer un nombre aléatoire
 
-**ROUND**
+### 8.3.2. **ROUND**
 Permet d'arrondir un décimal
-
-Ou encore ABS(), SIN(), COS(), EXP(), LOG(), PI()...
 
 ``` sql
 SELECT price, ROUND(price,1) AS rounded_price FROM product;
@@ -880,22 +1157,34 @@ price | rounded_price
 20.99 | 21
 ```
 
-* ## Fonctions Date
+### 8.3.3. **Autres fonctions mathématiques**
 
-**NOW()** : renvoie la date du jour
-**MONTH()** : extrait le numéro de mois d'une date
-**DATEDIFF()**
+Ou encore ABS(), SIN(), COS(), EXP(), LOG(), PI()...
 
-* ## Fonctions D'agrégation
+## 8.4. Fonctions Date
+
+### 8.4.1. **NOW()**
+Renvoie la date du jour
+### 8.4.2. **MONTH()**
+Extrait le numéro de mois d'une date
+### 8.4.3. **DATEDIFF()**
+
+## 8.5. Fonctions D'agrégation
 
 Fonctions permettant de réaliser des calculs sur un ensemble de résultats.
 
-**COUNT()** compte le nombre de résultats
-**SUM()** calcul la somme pour un champ donné
-**MAX()** renvoi la valeur max pour un champ donné
-**MIN()** renvoi la valeur min pour un champ donné
-**AVG()** calcul la moyenne pour un champ donné
+### 8.5.1. **COUNT()**
+Compte le nombre de résultats
+### 8.5.2. **SUM()**
+Calcule la somme pour un champ donné
+### 8.5.3. **MAX()**
+Renvoie la valeur max pour un champ donné
+### 8.5.4. **MIN()**
+Renvoie la valeur min pour un champ donné
+### 8.5.5. **AVG()**
+Calcule la moyenne pour un champ donné
 
+### 8.5.6. Exemples
 
 ``` sql
 SELECT AVG(note) as average FROM note;
@@ -905,12 +1194,20 @@ SELECT count(*) as nb_school FROM school;
 ```
 Attention on ne peut pas mélanger ce type de reqiête dite d'agrégation avec des requêtes classiques ligne par ligne.
 
+```sql
+SELECT COUNT(id) FROM users;
+SELECT MAX(age) FROM users;
+SELECT MIN(age) FROM users;
+SELECT SUM(age) FROM users;
+SELECT UCASE(first_name), LCASE(last_name) FROM users;
+```
+
 
 https://sql.sh/fonctions
 https://fr.wikibooks.org/wiki/MySQL/Fonctions
 
 
-* ## GROUP BY / HAVING
+## 8.6. GROUP BY / HAVING
 
 La jointure ici ne sert à rien pour “grouper”, puisque c’est le school_id de la table wizard qui est utilisé. Mais elle est cependant utile pour récupérer le name de l’école.
 
@@ -1000,7 +1297,13 @@ Lyon      | 10
 Orléans   | 3
 ```
 
-* ## Administration avancée
+```sql
+SELECT age, COUNT(age) FROM users GROUP BY age;
+SELECT age, COUNT(age) FROM users WHERE age > 20 GROUP BY age;
+SELECT age, COUNT(age) FROM users GROUP BY age HAVING count(age) >=2;
+```
+
+## 8.7. Administration avancée
 Il est possible de créer/supprimer des utilisateurs 
 
 ``` sql
@@ -1017,7 +1320,7 @@ GRANT ALL ON mydb TO 'perceval'@'localhost';
 GRANT SELECT, UPDATE ON mydb.Eleve TO 'caradoc'@'localhost';
 // Caradoc n’a que les droits de SELECT et UPDATE et uniquement sur la table Eleve de la bdd mydb
 ```
-* ## Administration avancée
+## 8.8. Administration avancée
 
 **Procédure stockée** : Suite d’instructions SQL définies par un nom 
 et enregistrées dans la base de données elle-même. Il est possible 
@@ -1036,15 +1339,12 @@ https://openclassrooms.com/fr/courses/6971126-implementez-vos-bases-de-donnees-r
 
 [Return to Top](#notes-sql)
 # 9. **Main Title**
-* ## Subtitle
+## 9.1. Subtitle
 
 ``` sql
 
 
 ```
-
-
-
 
 [u]Texte[/u]
 <color=red>Texte</color> / [color=#FF3300]Texte[/color]
@@ -1058,8 +1358,8 @@ https://openclassrooms.com/fr/courses/6971126-implementez-vos-bases-de-donnees-r
 Commande   ==ALTER== 
 
 
-### 9.0.1. qfsdf
-#### 9.0.1.1. qfsfsfsfd
+### 9.1.1. qfsdf
+#### 9.1.1.1. qfsfsfsfd
 qfsfsfsfd
 #qfsfsfsfd
 fsfsfs
