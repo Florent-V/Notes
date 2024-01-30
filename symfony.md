@@ -14,6 +14,14 @@
   - [3.6. Gestion des images](#36-gestion-des-images)
   - [3.7. Installation de librairies tierces avec Webpack Encore](#37-installation-de-librairies-tierces-avec-webpack-encore)
   - [3.8. Installation de bootstrap](#38-installation-de-bootstrap)
+- [**Installation AssetMapper**](#installation-assetmapper)
+  - [Installation](#installation)
+  - [Ajout de Bootstrap](#ajout-de-bootstrap)
+  - [Sass](#sass)
+    - [Installation](#installation-1)
+    - [Structure des fichiers Sass](#structure-des-fichiers-sass)
+    - [Exclusions des fichiers Sass de l'AssetMapper](#exclusions-des-fichiers-sass-de-lassetmapper)
+    - [Bootstrap Sass](#bootstrap-sass)
 - [4. **Création de la page d’accueil**](#4-création-de-la-page-daccueil)
   - [4.1. Créer le premier contrôleur](#41-créer-le-premier-contrôleur)
   - [4.2. Implémenter la route](#42-implémenter-la-route)
@@ -488,7 +496,151 @@ yarn add bootstrap --dev
 ```
 https://symfony.com/doc/current/frontend/encore/bootstrap.html
 
+[Return to Top](#notes-symfony)
+# **Installation AssetMapper**
 
+AssetMapper est un outil qui permet de gérer les assets (CSS, JS, images) de ton projet. Il permet de gérer les dépendances entre les assets, et de les charger dans le bon ordre dans ton projet.
+
+Il tourne entièrement avec PHP sans avoir besoin d'un build. Il est donc très facile à utiliser et à déployer.
+
+[Documentation AssetMapper](https://symfony.com/doc/current/frontend/asset_mapper.html)
+
+## Installation
+
+``` sh
+composer require symfony/asset-mapper symfony/asset symfony/twig-pack
+```
+
+Cela permet d'avoir également les composants Asset et Twig.
+
+Les fichiers suivants seront créés :
+- `asset/app.js` : le fichier javascript principal
+
+```js
+import './bootstrap.js';
+/*
+ * Welcome to your app's main JavaScript file!
+ *
+ * This file will be included onto the page via the importmap() Twig function,
+ * which should already be in your base.html.twig.
+ */
+import './styles/app.css';
+
+console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
+
+```
+
+- `asset/styles/app.css` : le fichier css principal
+```js
+body {
+    background-color: skyblue;
+}
+```
+- `config/packages/asset_mapper.yaml` : là où l'on défini les chemins des assets
+- `importmap.php` Le fichier de configuration importmap
+
+Tous les packages installés se trouvent ici.
+
+Il a aussi mis à jour le fichier `templates/base.html.twig` :
+  
+``` twig
+{% block javascripts %}
+    {{ importmap('app') }}
+{% endblock %}  
+```
+
+## Ajout de Bootstrap
+
+![commande](/img/67.png)  
+
+``` sh
+php bin/console importmap:require bootstrap/dist/css/bootstrap.min.css
+php bin/console importmap:require bootstrap/dist/js/bootstrap.min.js
+symfony console importmap:require bootstrap
+```
+
+La deuxième commande permet d'ajouter les fichiers JS de bootstrap.
+Cela va donc ajouter les packages dans le fichier `importmap.php`.
+
+
+## Sass
+
+### Installation
+
+``` sh
+composer require symfonycasts/sass-bundle
+```
+
+Il faut ensuite renommer le fichier `assets/styles/app.css` en `assets/styles/app.scss` et modifier le fichier `assets/app.js` pour qu’il charge le fichier `app.scss` et non plus `app.css:`
+
+'./styles/app.css'
+``` js
+// 'assets/app.js'
+import './styles/app.scss';
+```
+
+Lancer ensuite la commande :
+
+``` sh
+php bin/console sass:build --watch
+```
+
+### Structure des fichiers Sass
+
+Pour structurer les fichiers Sass, dans le dossier `assets/styles/`, on peut créer d'autres fichiers `.scss` en les préfixant avec un underscore pour les exclure de la compilation. On les importe ensuite dans le fichier principal `app.scss`.
+
+Pour surcharger les variables bootstrap, on peut créer un fichier `_variables.scss` dans le dossier `assets/styles/` et y mettre les variables à surcharger. Il faut ensuite importer ce fichier avant le fichier `bootstrap.scss` dans le fichier `app.scss`.
+
+Exemple de style dans `assets/styles/app.scss` :
+``` scss
+// Default variable overrides
+@import "./variables";
+@import '../../vendor/twbs/bootstrap/scss/bootstrap';
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
+@import "./global";
+@import "./globalForm";
+@import "./home";
+@import "./loginForm";
+@import "./navbar";
+@import "./program.scss";
+@import "./programNew.scss";
+```
+![app.scss](/img/68.png) 
+
+
+### Exclusions des fichiers Sass de l'AssetMapper
+
+Il faut alors exclure les fichiers Sass de l'AssetMapper. Pour cela, il faut modifier le fichier `config/packages/asset_mapper.yaml` :
+
+``` yaml
+# config/packages/asset_mapper.yaml
+framework:
+    asset_mapper:
+        paths:
+            - assets/
+        excluded_patterns:
+            - '*/assets/styles/_*.scss'
+            - '*/assets/styles/**/_*.scss'
+```
+Attention à ne pas exclure le fichier principal `app.scss` !
+
+### Bootstrap Sass
+
+Pour utiliser Bootstrap en Sass, il faut installer le package `bootstrap` avec la commande :
+
+``` sh
+composer require twbs/bootstrap
+```
+
+Il faut ensuite importer le fichier `bootstrap.scss` dans le fichier `app.scss` :
+
+``` scss
+// assets/styles/app.scss
+/* Override some Bootstrap variables */
+$red: #FB4040;
+@import "../../vendor/twbs/bootstrap/scss/bootstrap";
+```
 
 [Return to Top](#notes-symfony)
 # 4. **Création de la page d’accueil**
@@ -3761,7 +3913,7 @@ security:
                 property: email
 ```
 
-https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords  
 https://symfony.com/doc/current/security/passwords.html
 
 ## 16.3. Configurer le firewall
